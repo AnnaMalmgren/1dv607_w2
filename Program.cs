@@ -1,4 +1,7 @@
 ﻿using System;
+using view;
+using controller;
+using System.Collections.Generic;
 
 namespace _1dv607_w2
 {
@@ -6,7 +9,17 @@ namespace _1dv607_w2
     {
         static void Main(string[] args)
         {
-            Console.WriteLine("Hello World!");
+            ConsoleView view = new ConsoleView();
+            MemberController controller = new MemberController(view);
+
+            MenuChoice choice = view.showMenu();
+
+            if (choice == MenuChoice.AddMember) 
+            {
+                controller.createMember();
+
+            }
+
         }
     }
 }
