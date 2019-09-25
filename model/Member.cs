@@ -1,55 +1,70 @@
 using System;
-using System.IO;
-using Newtonsoft.Json;
 using System.Collections.Generic;
 
 namespace model
 {
     public class Member {
-        private static string _dir = Directory.GetCurrentDirectory();
-        private string _filePath =$"{_dir}\\Data\\members.json";
         private string _name;
         private string _personalNumber;
-        private Guid _memberId;
+
+        private List<Boat> _boats = new List<Boat>();
+
+        public int NrOfBoats 
+        {
+            get => 1;
+        }
 
         public string Name
         {
             get => this._name;
+
+            set 
+            {
+                if (String.IsNullOrEmpty(value))
+                {
+                    throw new ArgumentNullException("Member must have a name");
+                }
+
+                this._name = value;
+            }
         }
 
         public string PersonalNumber
         {
             get => this._personalNumber;
+            set => this._personalNumber = value;
         }
 
-        public Guid MemberId
+        public string MemberId { get; private set; }
+
+        public Member(string name, string personalNumber) 
         {
-            get => this._memberId;
+            this.Name = name; 
+            this.PersonalNumber = personalNumber;
+            this.MemberId = this.generateId();
         }
 
-        public Member(string name, string personalNumber) {
-            this._name = name; 
-            this._personalNumber = personalNumber;
-            this._memberId = Guid.NewGuid();
+        private string generateId() {
+            string name = this._name.Substring(0, 2); 
+            string personalNumber = this._personalNumber.Substring(5, 4);      
+            return $"{name}{personalNumber}";
         }
 
-        public List<Member> getMembers() {
-            string jsonData = System.IO.File.ReadAllText(this._filePath);
-            List<Member> memberList = JsonConvert.DeserializeObject<List<Member>>(jsonData) ?? new List<Member>();
-            return memberList;
-        }
-
-        public List<Member> addMember(Member member) {
-            List<Member> memberList = this.getMembers();
-            memberList.Add(member);
-            return memberList;
-        }
-
-        public void saveMember(Member member)
+        public Member updateName(Member member, string name) 
         {
-            List<Member> memberList = member.addMember(member);
-            string memberInfo = JsonConvert.SerializeObject(memberList);
-            File.WriteAllText(this._filePath, memberInfo);	
+            member.Name = name;
+            return member; 
         }
+
+        public Member updatePersonalNumber(Member member, string personalNumber)
+        {
+            member.PersonalNumber = personalNumber;
+            return member;
+        }
+
+        public void addBoat(Boat boat)
+        {
+            this._boats.Add(boat);
+        } 
     }
 }

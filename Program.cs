@@ -9,17 +9,26 @@ namespace _1dv607_w2
     {
         static void Main(string[] args)
         {
+            try {
             ConsoleView view = new ConsoleView();
             MemberController controller = new MemberController(view);
 
-            MenuChoice choice = view.showMenu();
+            MainMenu choice = view.showMenu();
 
-            if (choice == MenuChoice.AddMember) 
+            switch (choice)
             {
+                case MainMenu.AddMember:
                 controller.createMember();
+                break;
+                case MainMenu.CompactList:
+                controller.compactList();
+                break;
 
             }
-
+            } catch (Exception e) 
+            {
+                Console.WriteLine(e);
+            }
         }
     }
 }
