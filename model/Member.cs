@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace model
 {
@@ -7,9 +8,9 @@ namespace model
         private string _name;
         private string _personalNumber;
 
-        private List<Boat> _boats = new List<Boat>();
+        public List<Boat> Boats { get; private set; }
 
-        public int NrOfBoats => _boats.Count;
+        public int NrOfBoats => Boats.Count;
 
         public string Name
         {
@@ -39,6 +40,7 @@ namespace model
             this.Name = name; 
             this.PersonalNumber = personalNumber;
             this.MemberId = this.generateId();
+            this.Boats = new List<Boat>();
         }
 
         private string generateId() {
@@ -59,9 +61,14 @@ namespace model
             return member;
         }
 
-        public void addBoat(Boat boat)
-        {
-            this._boats.Add(boat);
-        } 
+        public void addBoat(BoatTypes type, float length) {
+            int id = this.NrOfBoats + 1;
+            this.Boats.Add(new Boat(type, length, id));
+        }
+
+        public Boat getBoat(int id) => this.Boats.FirstOrDefault(boat => boat.Id == id);
+        
+
+        public void deleteBoat(Boat boatToRemove) => this.Boats.Remove(boatToRemove);
     }
 }

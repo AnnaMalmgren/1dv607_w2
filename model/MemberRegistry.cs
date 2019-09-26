@@ -16,7 +16,18 @@ namespace model
 
         public MemberRegistry()
         {
-            this._memberList = this.getAllCurrentMembers();
+            this._memberList = this.readMemberFile();
+        }
+
+        public List<Member> readMemberFile()
+        {
+            string jsonData = System.IO.File.ReadAllText($"{this._dir}{this._filePath}");
+            return JsonConvert.DeserializeObject<List<Member>>(jsonData) ?? new List<Member>();
+        }
+
+        private void writeToMemberFile() {
+            string memberInfo = JsonConvert.SerializeObject(this._memberList);
+            File.WriteAllText($"{this._dir}{this._filePath}", memberInfo);	
         }
 
 
@@ -31,27 +42,18 @@ namespace model
             return this._memberList.Find(member => member.MemberId == id);
         }
 
-        private List<Member> getAllCurrentMembers() 
-        {
-            string jsonData = System.IO.File.ReadAllText($"{this._dir}{this._filePath}");
-            return JsonConvert.DeserializeObject<List<Member>>(jsonData) ?? new List<Member>();
-
-        }
-
         public void deleteMember(string id) 
         {
            Member memberToDelete = this.getMember(id);
 
            this._memberList.Remove(memberToDelete);
-           string memberInfo = JsonConvert.SerializeObject(this._memberList);
-           File.WriteAllText($"{this._dir}{this._filePath}", memberInfo);	
+           this.writeToMemberFile();	
         }
 
         public void saveMember(Member newMember)
         {
             this._memberList.Add(newMember);
-            string memberInfo = JsonConvert.SerializeObject(this._memberList);
-            File.WriteAllText($"{this._dir}{this._filePath}", memberInfo);	
+            this.writeToMemberFile();	
         }
 
         public void updateMember(Member updatedMember)
@@ -64,24 +66,25 @@ namespace model
                     member.PersonalNumber = updatedMember.PersonalNumber;
                 });
                 
-                string memberInfo = JsonConvert.SerializeObject(this._memberList);
-                File.WriteAllText($"{this._dir}{this._filePath}", memberInfo);
+                this.writeToMemberFile();
         }
 
-        public void addBoat() 
+        public void upadetBoatList(Member currentMember, BoatTypes type, float length)
         {
-            throw new NotImplementedException();
-
+             this._memberList 
+                .Where(member => member.MemberId == currentMember.MemberId)
+                .ToList()
+                .ForEach(member => {
+                    member.addBoat(type, length);
+                });
+                
+                this.writeToMemberFile();
         }
-
-        public void deleteBoat()
+        public void deleteBoat(Member member, int boatId)
         {
-            throw new NotImplementedException();
-        }
-
-        public void changeBoat()
-        {
-            throw new NotImplementedException();
+            Boat boat = member.getBoat(boatId);
+            member.deleteBoat(boat);
+            this.writeToMemberFile();
         }
     }
 }

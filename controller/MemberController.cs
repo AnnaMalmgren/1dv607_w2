@@ -32,13 +32,27 @@ namespace controller
                MemberMenu menuChoice = this.getSpecificMember(memberId);
                switch (menuChoice)
                {
-                   case MemberMenu.ChangeMember:
+                    case MemberMenu.ChangeMember:
                     this.changeMember(memberId);
                     break;
 
-                   case MemberMenu.DeleteMember:
+                    case MemberMenu.DeleteMember:
                     this._registry.deleteMember(memberId);
                     break;
+
+                    case MemberMenu.RegisterBoat:
+                    this.registerBoat(memberId);
+                    break;
+
+                    case MemberMenu.DeleteBoat:
+                    Member member = this._registry.getMember(memberId);
+                    int boatId = this._view.getBoatToDelete(member);
+                    this._registry.deleteBoat(member, boatId);
+                    break;
+
+                    case MemberMenu.ChangeBoat:
+                    throw new NotImplementedException();
+
                }
            }
         }
@@ -58,7 +72,7 @@ namespace controller
         {
             Member member = this._registry.getMember(memberId);
 
-            ChangeMember menuchoice = this._view.menuChangeMember();
+            ChangeMember menuchoice = this._view.getChangeMemberChoice();
             switch (menuchoice)
             {
                 case ChangeMember.ChangeName:
@@ -73,21 +87,15 @@ namespace controller
                 this._registry.updateMember(member);
                 break;
 
-            }
-               
-
+            }      
         }
 
-
-        public void registerBoat()
+        public void registerBoat(string id)
         {
-            string id = this._view.getMemberId();
             Member member = this._registry.getMember(id);
-            string type = this._view.getBoatType();
+            BoatTypes type = this._view.getBoatType();
             float length = this._view.getBoatLength();
-            Boat newBoat = new Boat(type, length);
-            member.addBoat(newBoat);
-            
+            this._registry.upadetBoatList(member, type, length);
         }
 
     }

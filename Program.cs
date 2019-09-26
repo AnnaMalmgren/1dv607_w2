@@ -13,7 +13,7 @@ namespace _1dv607_w2
             ConsoleView view = new ConsoleView();
             MemberController controller = new MemberController(view);
 
-            MainMenu choice = view.showMenu();
+            MainMenu choice = view.getMainMenuChoice();
 
             switch (choice)
             {
@@ -22,6 +22,9 @@ namespace _1dv607_w2
                 break;
                 case MainMenu.CompactList:
                 controller.compactList();
+                break;
+                case MainMenu.VerboseList:
+                controller.verboseList();
                 break;
 
             }

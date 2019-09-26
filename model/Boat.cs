@@ -1,19 +1,25 @@
 using System;
-using System.IO;
-using Newtonsoft.Json;
-using System.Collections.Generic;
+
 
 namespace model
 {
+
+    public enum BoatTypes
+    {
+        Sailboat = 1, 
+        Motorsailer, 
+        kayak,
+        Canoe, 
+        Other
+    }
     public class Boat 
     {
-        private string _type;
         private float _length;
 
         public float Length 
         {
-            get => _length;
-            set
+            get => this._length;
+            private set
             {
                 if (value <= 0)
                 {
@@ -23,23 +29,19 @@ namespace model
             }
         }
 
-        public string Type 
-        {
-            get => _type;
-            set
-            {
-                if (String.IsNullOrEmpty(value))
-                {
-                    throw new ArgumentNullException("The boat must have a type.");
-                }
-                _type = value;
-            }
-        }
+         public int Id  => this._id;
+      
 
-        public Boat (string type, float length) 
+        private int _id;
+
+        public BoatTypes Type { get; set; }
+
+        public Boat (BoatTypes type, float length, int id) 
         {
-            this._type = type;
-            this._length = length;
+            this.Type = type;
+            this.Length = length;
+            this._id = id;
         }
     }
+
 }
