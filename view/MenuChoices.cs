@@ -17,11 +17,18 @@ namespace view
 
         DeleteMember,
 
-        AddBoat,
+        RegisterBoat,
 
         ChangeBoat,
 
         DeleteBoat
+    }
+
+    public enum ChangeMember
+    {
+        Exit,
+        ChangeName,
+        ChangePersonalNr
     }
 
 }

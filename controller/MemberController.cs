@@ -26,24 +26,26 @@ namespace controller
 
         public void compactList()
         {
-           string memberId = this._view.showCompactList(this._registry.getMemberList());
+           string memberId = this._view.showCompactList(this._registry.MemberList);
            if (!String.IsNullOrEmpty(memberId))
            {
                MemberMenu menuChoice = this.getSpecificMember(memberId);
                switch (menuChoice)
                {
                    case MemberMenu.ChangeMember:
+                    this.changeMember(memberId);
+                    break;
 
                    case MemberMenu.DeleteMember:
                     this._registry.deleteMember(memberId);
-                   break;
+                    break;
                }
            }
         }
 
         public void verboseList()
         {
-            this._view.showVerboseList(this._registry.getMemberList());
+            this._view.showVerboseList(this._registry.MemberList);
         }
  
         public MemberMenu getSpecificMember(string id) 
@@ -56,19 +58,23 @@ namespace controller
         {
             Member member = this._registry.getMember(memberId);
 
-            int menuchoice = this._view.menuChangeMember();
-            if (menuchoice == 1) 
+            ChangeMember menuchoice = this._view.menuChangeMember();
+            switch (menuchoice)
             {
+                case ChangeMember.ChangeName:
                 string name = this._view.getMemberName();
                 member.updateName(member, name);
-                this._registry.saveMember(member);
-            } 
-            else if (menuchoice == 2)
-            {
-                string personalNr = this._view.getMemberPersonalNr();
-                member.updateName(member, personalNr);
                 this._registry.updateMember(member);
+                break;
+
+                case ChangeMember.ChangePersonalNr:
+                string personalNr = this._view.getMemberPersonalNr();
+                member.updatePersonalNumber(member, personalNr);
+                this._registry.updateMember(member);
+                break;
+
             }
+               
 
         }
 

@@ -9,10 +9,7 @@ namespace model
 
         private List<Boat> _boats = new List<Boat>();
 
-        public int NrOfBoats 
-        {
-            get => 1;
-        }
+        public int NrOfBoats => _boats.Count;
 
         public string Name
         {

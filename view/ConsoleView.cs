@@ -35,7 +35,7 @@ namespace view
             {  
                 Console.WriteLine("\n - Menu -----------------------------------\n");
                 Console.WriteLine(" 0. Exit.");
-                Console.WriteLine(" 1. Change member");
+                Console.WriteLine(" 1. Change member information");
                 Console.WriteLine(" 2. Delete member");
                 Console.WriteLine(" 3. Register boat");
                 Console.WriteLine(" 4. Change boat information");
@@ -51,7 +51,7 @@ namespace view
             } while (true);
         }
 
-        public int menuChangeMember() 
+        public ChangeMember menuChangeMember() 
         {
             int index;
             do
@@ -66,7 +66,7 @@ namespace view
                 if (int.TryParse(Console.ReadLine(), out index) && index >= 0 && index <= 2)
                 {
                     Console.Clear();
-                    return index;
+                    return (ChangeMember)index;
                 }
             } while (true);
         }
@@ -84,7 +84,6 @@ namespace view
             return Console.ReadLine();
         
         }
-
 
         public string getMemberName() 
         {
