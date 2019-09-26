@@ -31,4 +31,11 @@ namespace view
         ChangePersonalNr
     }
 
+    public enum ChangeBoat
+    {
+        Exit,
+        ChangeType,
+        ChangeLength
+    }
+
 }

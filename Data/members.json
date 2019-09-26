@@ -1,1 +1,1 @@
-[{"Boats":[{"Length":10.0,"Id":1,"Type":3},{"Length":9.0,"Id":2,"Type":4}],"NrOfBoats":2,"Name":"Anna","PersonalNumber":"8802274087","MemberId":"An7408"},{"Boats":[],"NrOfBoats":0,"Name":"Lisa","PersonalNumber":"9098213476","MemberId":"Li1347"}]
+[{"Boats":[{"Length":10.0,"Id":1,"Type":3},{"Length":9.0,"Id":2,"Type":1},{"Length":10.0,"Id":3,"Type":5}],"NrOfBoats":3,"Name":"Anna","PersonalNumber":"8802274087","MemberId":"An7408"},{"Boats":[],"NrOfBoats":0,"Name":"Lisa","PersonalNumber":"9098213476","MemberId":"Li1347"}]

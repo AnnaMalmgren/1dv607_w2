@@ -69,13 +69,25 @@ namespace model
                 this.writeToMemberFile();
         }
 
-        public void upadetBoatList(Member currentMember, BoatTypes type, float length)
+        public void addToBoatList(Member currentMember, BoatTypes type, float length)
         {
              this._memberList 
                 .Where(member => member.MemberId == currentMember.MemberId)
                 .ToList()
                 .ForEach(member => {
                     member.addBoat(type, length);
+                });
+                
+                this.writeToMemberFile();
+        }
+
+        public void updateBoatList(Member currentMember, Boat updatedBoat)
+        {
+             currentMember.Boats
+                .Where(boat => boat.Id == updatedBoat.Id)
+                .ToList()
+                .ForEach(boat => {
+                    boat = updatedBoat;
                 });
                 
                 this.writeToMemberFile();

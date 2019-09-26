@@ -27,6 +27,8 @@ namespace controller
         public void compactList()
         {
            string memberId = this._view.showCompactList(this._registry.MemberList);
+           Member member = this._registry.getMember(memberId);
+
            if (!String.IsNullOrEmpty(memberId))
            {
                MemberMenu menuChoice = this.getSpecificMember(memberId);
@@ -45,13 +47,16 @@ namespace controller
                     break;
 
                     case MemberMenu.DeleteBoat:
-                    Member member = this._registry.getMember(memberId);
-                    int boatId = this._view.getBoatToDelete(member);
-                    this._registry.deleteBoat(member, boatId);
+                    string deleteMessage = "Enter the nr of the boat you want to delete below.";
+                    int deleteId = this._view.getChosenBoat(member, deleteMessage);
+                    this._registry.deleteBoat(member, deleteId);
                     break;
 
                     case MemberMenu.ChangeBoat:
-                    throw new NotImplementedException();
+                    string message = "Enter the nr of the boat you want to change at the bottom.";
+                    int changeId = this._view.getChosenBoat(member, message);
+                    this.changeBoat(member, changeId);
+                    break;
 
                }
            }
@@ -76,15 +81,32 @@ namespace controller
             switch (menuchoice)
             {
                 case ChangeMember.ChangeName:
-                string name = this._view.getMemberName();
-                member.updateName(member, name);
+                member.Name = this._view.getMemberName();
                 this._registry.updateMember(member);
                 break;
 
                 case ChangeMember.ChangePersonalNr:
-                string personalNr = this._view.getMemberPersonalNr();
-                member.updatePersonalNumber(member, personalNr);
+                member.PersonalNumber = this._view.getMemberPersonalNr();
                 this._registry.updateMember(member);
+                break;
+
+            }      
+        }
+
+         public void changeBoat(Member member, int boatId)
+        {
+             Boat boat = member.getBoat(boatId);
+             ChangeBoat menuChoice = this._view.getChangeBoatChoice();
+            switch (menuChoice)
+            {
+                case ChangeBoat.ChangeType:
+                boat.Type = this._view.getBoatType();
+                this._registry.updateBoatList(member, boat);
+                break;
+
+                case ChangeBoat.ChangeLength:
+                boat.Length = this._view.getBoatLength();
+                this._registry.updateBoatList(member, boat);
                 break;
 
             }      
@@ -95,7 +117,7 @@ namespace controller
             Member member = this._registry.getMember(id);
             BoatTypes type = this._view.getBoatType();
             float length = this._view.getBoatLength();
-            this._registry.upadetBoatList(member, type, length);
+            this._registry.addToBoatList(member, type, length);
         }
 
     }

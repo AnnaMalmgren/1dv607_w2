@@ -27,10 +27,20 @@ namespace model
             }
         }
 
+        
         public string PersonalNumber
         {
             get => this._personalNumber;
-            set => this._personalNumber = value;
+
+            set 
+            {
+                if (value.Length != 10)
+                {
+                    throw new ArgumentNullException("Member must have a name");
+                }
+
+                this._personalNumber = value;
+            }
         }
 
         public string MemberId { get; private set; }
@@ -49,17 +59,6 @@ namespace model
             return $"{name}{personalNumber}";
         }
 
-        public Member updateName(Member member, string name) 
-        {
-            member.Name = name;
-            return member; 
-        }
-
-        public Member updatePersonalNumber(Member member, string personalNumber)
-        {
-            member.PersonalNumber = personalNumber;
-            return member;
-        }
 
         public void addBoat(BoatTypes type, float length) {
             int id = this.NrOfBoats + 1;

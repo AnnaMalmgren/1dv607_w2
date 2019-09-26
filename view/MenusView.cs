@@ -36,12 +36,12 @@ namespace view
             Console.Write(">Enter menu selection [0-5]: ");
         }
 
-        public void ChangeMemberMenu() 
+        public void ChangeMenu(string changeAltOne, string changeAltTwo) 
         {
             Console.WriteLine("\n - Menu -----------------------------------\n");
             Console.WriteLine(" 0. Exit.");
-            Console.WriteLine(" 1. Change name");
-            Console.WriteLine(" 2. Change personal number");
+            Console.WriteLine($" 1. Change {changeAltOne}");
+            Console.WriteLine($" 2. Change {changeAltTwo}");
             Console.WriteLine("\n ══════════════════════════════════════════\n");
             Console.Write(">Enter menu selection [0-2]: ");
         }

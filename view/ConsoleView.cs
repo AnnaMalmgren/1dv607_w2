@@ -47,12 +47,27 @@ namespace view
             int index;
             do
             {  
-                this._menu.ChangeMemberMenu();
+                this._menu.ChangeMenu("name", "personal number");
                 if (int.TryParse(Console.ReadLine(), out index) && index >= 0 
                     && index <= this._menu.ChangeLength)
                 {
                     Console.Clear();
                     return (ChangeMember)index;
+                }
+            } while (true);
+        }
+
+          public ChangeBoat getChangeBoatChoice() 
+        {
+            int index;
+            do
+            {  
+                this._menu.ChangeMenu("type", "length");
+                if (int.TryParse(Console.ReadLine(), out index) && index >= 0 
+                    && index <= this._menu.ChangeLength)
+                {
+                    Console.Clear();
+                    return (ChangeBoat)index;
                 }
             } while (true);
         }
@@ -141,14 +156,14 @@ namespace view
             Console.WriteLine("\n═══════════════════════════════════════════════");
         }
 
-        public int getBoatToDelete(Member member)
+         public int getChosenBoat(Member member, string message)
         {
             int index;
             do
             {
-                this.displayBoats(member);
-                Console.WriteLine("Enter the nr of the boat you want to delete below.");
+                Console.WriteLine(message);
                 Console.WriteLine("Press nr 0 to go back.");
+                this.displayBoats(member);
                 Console.Write(">Enter nr: ");
                 if (int.TryParse(Console.ReadLine(), out index) && index >= 0 
                     && index <= member.NrOfBoats)
@@ -158,6 +173,7 @@ namespace view
                 }
             } while(true);
         }
+
 
         public void displayBoats(Member member)
         {

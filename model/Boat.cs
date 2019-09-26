@@ -19,7 +19,7 @@ namespace model
         public float Length 
         {
             get => this._length;
-            private set
+            set
             {
                 if (value <= 0)
                 {
