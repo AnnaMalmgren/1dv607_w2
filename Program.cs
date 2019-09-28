@@ -1,7 +1,7 @@
-﻿using System;
+﻿
 using view;
 using controller;
-using System.Collections.Generic;
+
 
 namespace _1dv607_w2
 {
@@ -9,14 +9,13 @@ namespace _1dv607_w2
     {
         static void Main(string[] args)
         {
-            try {
-                ConsoleView view = new ConsoleView();
-                ConsoleController controller = new ConsoleController(view);
-                controller.mainMenu();
-            } catch (Exception e) 
-            {
-                Console.WriteLine(e);
-            }
+
+            ConsoleView cView = new ConsoleView();
+            MemberView mView = new MemberView();
+            ConsoleController controller = new ConsoleController(cView, mView);
+                
+            controller.startApp();
+         
         }
     }
 }

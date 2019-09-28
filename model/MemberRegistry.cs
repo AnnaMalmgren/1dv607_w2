@@ -50,8 +50,19 @@ namespace model
            this.writeToMemberFile();	
         }
 
-        public void saveMember(Member newMember)
+        private void uniqueId(Member newMember)
         {
+            bool idExists = this._memberList.Exists(member => member.MemberId == newMember.MemberId);
+            do 
+            {
+                newMember.generateId();
+            } while (idExists);
+        }
+
+        public void saveMember(string name, string personalNr)
+        {
+            Member newMember = new Member(name, personalNr);
+            this.uniqueId(newMember);
             this._memberList.Add(newMember);
             this.writeToMemberFile();	
         }
@@ -81,9 +92,9 @@ namespace model
                 this.writeToMemberFile();
         }
 
-        public void updateBoatList(Member currentMember, Boat updatedBoat)
+        public void updateBoatList(Member member, Boat updatedBoat)
         {
-             currentMember.Boats
+             member.Boats
                 .Where(boat => boat.Id == updatedBoat.Id)
                 .ToList()
                 .ForEach(boat => {
@@ -96,6 +107,7 @@ namespace model
         {
             Boat boat = member.getBoat(boatId);
             member.deleteBoat(boat);
+            member.updateBoatsId();
             this.writeToMemberFile();
         }
     }

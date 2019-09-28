@@ -34,29 +34,38 @@ namespace model
 
             set 
             {
-                if (value.Length != 10)
+                int index;
+                if (int.TryParse(value, out index) || value.Length != 10)
                 {
-                    throw new ArgumentNullException("Member must have a name");
+                    throw new ArgumentNullException("Personal number must consist of ten numbers");
                 }
 
                 this._personalNumber = value;
             }
         }
 
-        public string MemberId { get; private set; }
+        public string MemberId { get; set; }
 
         public Member(string name, string personalNumber) 
         {
             this.Name = name; 
             this.PersonalNumber = personalNumber;
-            this.MemberId = this.generateId();
             this.Boats = new List<Boat>();
         }
 
-        private string generateId() {
-            string name = this._name.Substring(0, 2); 
-            string personalNumber = this._personalNumber.Substring(5, 4);      
-            return $"{name}{personalNumber}";
+        public string generateId() 
+        {
+            string id = this._name.Substring(0, 2);
+            Random rnd = new Random();
+            for (int i = 0; i < 3; i++)
+            {
+               id += rnd.Next(0, 10);
+            }
+            for (int i = 0; i < 2; i++)
+            {
+               id += (char)rnd.Next('a','z');  
+            }    
+            return id;
         }
 
 
@@ -66,8 +75,17 @@ namespace model
         }
 
         public Boat getBoat(int id) => this.Boats.FirstOrDefault(boat => boat.Id == id);
-        
 
+        public void updateBoatsId()
+        {
+            int count = 1;
+            foreach (Boat boat in this.Boats)
+            {  
+                boat.Id = count;
+                count++;
+            }
+        }
+        
         public void deleteBoat(Boat boatToRemove) => this.Boats.Remove(boatToRemove);
     }
 }

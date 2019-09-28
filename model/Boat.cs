@@ -29,10 +29,7 @@ namespace model
             }
         }
 
-         public int Id  => this._id;
-      
-
-        private int _id;
+         public int Id {get; set;}
 
         public BoatTypes Type { get; set; }
 
@@ -40,7 +37,7 @@ namespace model
         {
             this.Type = type;
             this.Length = length;
-            this._id = id;
+            this.Id = id;
         }
     }
 

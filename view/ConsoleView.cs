@@ -16,7 +16,7 @@ namespace view
                 Console.WriteLine(" 2. List members compact");
                 Console.WriteLine(" 3. List members verbose");
                 Console.WriteLine("\n ══════════════════════════════════════════\n");
-                Console.Write(">Enter menu selection [0-3]: "); 
+                this.setBlueText(">Enter menu selection [0-3]: "); 
 
                 if (int.TryParse(Console.ReadLine(), out index) && index >= 0 
                     && index <= 3)
@@ -25,11 +25,7 @@ namespace view
                     return (MainMenu)index;
                 }
 
-                Console.BackgroundColor = ConsoleColor.Red;
-                Console.ForegroundColor = ConsoleColor.White;
-                Console.WriteLine("\n Error! Enter a number between 0 and 3.\n");
-                Console.ResetColor();
-
+                this.setErrorMsg("Error! Enter a number between 0 and 3");
                 this.GetKeyPress("Press any key to continue");
 
             } while (true);
@@ -48,7 +44,7 @@ namespace view
                 Console.WriteLine(" 4. Change boat information");
                 Console.WriteLine(" 5. Delete boat");
                 Console.WriteLine("\n ═══════════════════════════════════════════\n");
-                Console.Write(">Enter menu selection [0-5]: ");
+                this.setBlueText(">Enter menu selection [0-5]: ");
 
                 if (int.TryParse(Console.ReadLine(), out index) && index >= 0 
                     && index <= 5)
@@ -58,7 +54,8 @@ namespace view
                    return (MemberMenu)index;
                 }
 
-                 this.GetKeyPress("\nError enter menu selection 0-5");
+                this.setErrorMsg("Error! Enter a number between 0 and 5");
+                this.GetKeyPress("Press any key to continue");
 
             } while (true);
         }
@@ -67,16 +64,24 @@ namespace view
         {
             do
             {
-                Console.Write($"Are you sure you want to delete {msg} (y/n): ");
+                this.setBlueText($"Are you sure you want to delete {msg} (y/n): ");
                 string confirm = Console.ReadLine();
-                if (confirm == "y" || confirm == "Y" || confirm == "n" || confirm == "N")
+                if (confirm == "y" || confirm == "n")
                 {
                     return confirm;
                 }
-
-                this.GetKeyPress("\nError you have to enter y for yes or n for no");
+             
+                this.setErrorMsg("Error you have to enter y for yes or n for no");
+                this.GetKeyPress("Press any key to continue");
             } while (true);
+        }
 
+        public void setErrorMsg(string msg)
+        {
+            Console.BackgroundColor = ConsoleColor.Red;
+            Console.ForegroundColor = ConsoleColor.White;
+            Console.WriteLine($"\n{msg}\n");
+            Console.ResetColor();
         }
 
         public void GetKeyPress(string msg)
@@ -87,6 +92,14 @@ namespace view
             Console.ResetColor();
             Console.ReadKey();
             Console.Clear();
-        }     
+        }
+
+         public void setBlueText(string msg)
+        {
+            Console.ForegroundColor = ConsoleColor.Blue;
+            Console.Write(msg); 
+            Console.ResetColor();
+        }
+     
     }
 }
