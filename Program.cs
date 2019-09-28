@@ -10,24 +10,9 @@ namespace _1dv607_w2
         static void Main(string[] args)
         {
             try {
-            ConsoleView view = new ConsoleView();
-            MemberController controller = new MemberController(view);
-
-            MainMenu choice = view.getMainMenuChoice();
-
-            switch (choice)
-            {
-                case MainMenu.AddMember:
-                controller.createMember();
-                break;
-                case MainMenu.CompactList:
-                controller.compactList();
-                break;
-                case MainMenu.VerboseList:
-                controller.verboseList();
-                break;
-
-            }
+                ConsoleView view = new ConsoleView();
+                ConsoleController controller = new ConsoleController(view);
+                controller.mainMenu();
             } catch (Exception e) 
             {
                 Console.WriteLine(e);

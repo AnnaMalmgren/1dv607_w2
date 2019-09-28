@@ -1,4 +1,4 @@
-using System;
+
 using view;
 using model;
 
@@ -7,12 +7,12 @@ namespace controller
 {
     public class MemberController
     {
-        private ConsoleView _view;
+        private MemberView _view;
 
         private MemberRegistry _registry;
-        public MemberController(ConsoleView view)
+        public MemberController()
         {
-            this._view = view;
+            this._view = new MemberView();
             this._registry = new MemberRegistry();
         }
 
@@ -24,61 +24,25 @@ namespace controller
            this._registry.saveMember(newMember);	
         }
 
-        public void compactList()
+       
+
+        public void compactList() => this._view.showCompactList(this._registry.MemberList);
+           
+        
+        public void verboseList() => this._view.showVerboseList(this._registry.MemberList);
+    
+        
+
+        public Member getSpecificMember(string id)  => this._registry.getMember(id);
+
+        public string getMemberId() => this._view.getMemberId();
+        
+
+        public void changeMember(Member member)
         {
-           string memberId = this._view.showCompactList(this._registry.MemberList);
-           Member member = this._registry.getMember(memberId);
-
-           if (!String.IsNullOrEmpty(memberId))
-           {
-               MemberMenu menuChoice = this.getSpecificMember(memberId);
-               switch (menuChoice)
-               {
-                    case MemberMenu.ChangeMember:
-                    this.changeMember(memberId);
-                    break;
-
-                    case MemberMenu.DeleteMember:
-                    this._registry.deleteMember(memberId);
-                    break;
-
-                    case MemberMenu.RegisterBoat:
-                    this.registerBoat(memberId);
-                    break;
-
-                    case MemberMenu.DeleteBoat:
-                    string deleteMessage = "Enter the nr of the boat you want to delete below.";
-                    int deleteId = this._view.getChosenBoat(member, deleteMessage);
-                    this._registry.deleteBoat(member, deleteId);
-                    break;
-
-                    case MemberMenu.ChangeBoat:
-                    string message = "Enter the nr of the boat you want to change at the bottom.";
-                    int changeId = this._view.getChosenBoat(member, message);
-                    this.changeBoat(member, changeId);
-                    break;
-
-               }
-           }
-        }
-
-        public void verboseList()
-        {
-            this._view.showVerboseList(this._registry.MemberList);
-        }
- 
-        public MemberMenu getSpecificMember(string id) 
-        {
-            Member member = this._registry.getMember(id);
-             return this._view.displayMember(member);
-        }
-
-        public void changeMember(string memberId)
-        {
-            Member member = this._registry.getMember(memberId);
-
-            ChangeMember menuchoice = this._view.getChangeMemberChoice();
-            switch (menuchoice)
+           
+            ChangeMember menuChoice = this._view.getChangeMemberChoice();
+            switch (menuChoice)
             {
                 case ChangeMember.ChangeName:
                 member.Name = this._view.getMemberName();
@@ -90,13 +54,30 @@ namespace controller
                 this._registry.updateMember(member);
                 break;
 
-            }      
+            }   
         }
 
+        public void displayMember(Member member) => this._view.displayMember(member);
+
+        public void deleteMember(string memberId) => this._registry.deleteMember(memberId);
+
+        public int checkBoatId(Member member, string msg)
+        {
+            if (member.NrOfBoats != 0)
+            {
+                int boatId = this._view.getChosenBoat(member, msg);
+                return boatId;
+            }
+            else
+            {
+                return 0;
+            }
+        }
+            
          public void changeBoat(Member member, int boatId)
         {
-             Boat boat = member.getBoat(boatId);
-             ChangeBoat menuChoice = this._view.getChangeBoatChoice();
+            Boat boat = member.getBoat(boatId);
+            ChangeBoat menuChoice = this._view.getChangeBoatChoice();
             switch (menuChoice)
             {
                 case ChangeBoat.ChangeType:
@@ -120,6 +101,8 @@ namespace controller
             this._registry.addToBoatList(member, type, length);
         }
 
+        public void deleteBoat(Member member, int boatId) => this._registry.deleteBoat(member, boatId);
+            
     }
 
 }

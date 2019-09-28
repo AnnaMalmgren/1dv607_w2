@@ -12,7 +12,7 @@ namespace view
 
     public enum MemberMenu
     {
-        Exit,
+        GoBack,
         ChangeMember,
 
         DeleteMember,
@@ -26,15 +26,13 @@ namespace view
 
     public enum ChangeMember
     {
-        Exit,
-        ChangeName,
+        ChangeName = 1,
         ChangePersonalNr
     }
 
     public enum ChangeBoat
     {
-        Exit,
-        ChangeType,
+        ChangeType = 1,
         ChangeLength
     }
 

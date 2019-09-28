@@ -1,29 +1,37 @@
 using System; 
-using System.Collections.Generic;
-using model;
 
 namespace view
 {
     public class ConsoleView 
     {
-        private MenusView _menu;
-        public ConsoleView()
-        {
-            this._menu= new MenusView();
-        }
+
         public MainMenu getMainMenuChoice() 
         {
              int index;
             do
             {  
-                this._menu.MainMenu();  
+                Console.WriteLine("\n═══════════════════ Main Menu ══════════════════════\n");;
+                Console.WriteLine(" 0. Exit");
+                Console.WriteLine(" 1. Add Member");
+                Console.WriteLine(" 2. List members compact");
+                Console.WriteLine(" 3. List members verbose");
+                Console.WriteLine("\n ══════════════════════════════════════════\n");
+                Console.Write(">Enter menu selection [0-3]: "); 
 
                 if (int.TryParse(Console.ReadLine(), out index) && index >= 0 
-                    && index <= this._menu.MainLength)
+                    && index <= 3)
                 {
                     Console.Clear();
                     return (MainMenu)index;
                 }
+
+                Console.BackgroundColor = ConsoleColor.Red;
+                Console.ForegroundColor = ConsoleColor.White;
+                Console.WriteLine("\n Error! Enter a number between 0 and 3.\n");
+                Console.ResetColor();
+
+                this.GetKeyPress("Press any key to continue");
+
             } while (true);
         }
 
@@ -32,159 +40,53 @@ namespace view
             int index;
             do
             {  
-                this._menu.MemberMenu();
+                Console.WriteLine("\n - Menu -----------------------------------\n");
+                Console.WriteLine(" 0. Main Menu");
+                Console.WriteLine(" 1. Change member information");
+                Console.WriteLine(" 2. Delete member");
+                Console.WriteLine(" 3. Register boat");
+                Console.WriteLine(" 4. Change boat information");
+                Console.WriteLine(" 5. Delete boat");
+                Console.WriteLine("\n ═══════════════════════════════════════════\n");
+                Console.Write(">Enter menu selection [0-5]: ");
+
                 if (int.TryParse(Console.ReadLine(), out index) && index >= 0 
-                    && index <= this._menu.MemberLength)
+                    && index <= 5)
                 {
                     Console.Clear();
-                    return (MemberMenu)index;
+
+                   return (MemberMenu)index;
                 }
+
+                 this.GetKeyPress("\nError enter menu selection 0-5");
+
             } while (true);
         }
 
-        public ChangeMember getChangeMemberChoice() 
+        public string getDeleteConfirm(string msg)
         {
-            int index;
             do
-            {  
-                this._menu.ChangeMenu("name", "personal number");
-                if (int.TryParse(Console.ReadLine(), out index) && index >= 0 
-                    && index <= this._menu.ChangeLength)
-                {
-                    Console.Clear();
-                    return (ChangeMember)index;
-                }
-            } while (true);
-        }
-
-          public ChangeBoat getChangeBoatChoice() 
-        {
-            int index;
-            do
-            {  
-                this._menu.ChangeMenu("type", "length");
-                if (int.TryParse(Console.ReadLine(), out index) && index >= 0 
-                    && index <= this._menu.ChangeLength)
-                {
-                    Console.Clear();
-                    return (ChangeBoat)index;
-                }
-            } while (true);
-        }
-
-        public float getBoatLength() 
-        {
-            Console.Write(">Enter boats length: ");
-            float.TryParse(Console.ReadLine(), out float length);
-            return length;
-        }
-
-        public BoatTypes getBoatType() 
-        {
-            int index;
-            do
-            {  
-                this._menu.BoatTypesMenu();
-                if (int.TryParse(Console.ReadLine(), out index) && index >= 0 
-                    && index <= this._menu.BoatTypes)
-                {
-                    Console.Clear();
-                    return (BoatTypes)index;
-                }
-            } while (true);
-        
-        }
-
-        public string getMemberName() 
-        {
-            Console.Write(">Enter members name: ");
-            return Console.ReadLine();
-        }
-
-        public string getMemberPersonalNr()
-        {
-            Console.Write(">Enter members personal number: ");
-            return Console.ReadLine();
-        }
-
-        public string getMemberId()
-        {
-           Console.Write(">Enter members member id: "); 
-           string id = Console.ReadLine();
-           return id;
-        }
-
-        public string showCompactList(IReadOnlyList<Member> members)
-        {
-            Console.WriteLine("To Look at a specific member enter the member id below");
-            Console.WriteLine("\n═══════════════════ Members ════════════════════════\n");
-            foreach(Member member in members)
             {
-                string formatedOutput = String.Format("{0,-12} {1,12} {2,12}",
-                $"Name: {member.Name}", $"Id: {member.MemberId}", $"Boats: {member.NrOfBoats}");
-                Console.WriteLine(formatedOutput);
-                Console.WriteLine("______________________________________________\n");
-            }
-            return this.getMemberId();
+                Console.Write($"Are you sure you want to delete {msg} (y/n): ");
+                string confirm = Console.ReadLine();
+                if (confirm == "y" || confirm == "Y" || confirm == "n" || confirm == "N")
+                {
+                    return confirm;
+                }
+
+                this.GetKeyPress("\nError you have to enter y for yes or n for no");
+            } while (true);
+
         }
 
-         public string showVerboseList(IReadOnlyList<Member> members)
+        public void GetKeyPress(string msg)
         {
-            Console.WriteLine("To Look at a specific member enter the member id at the bottom");
-            Console.WriteLine("\n═══════════════════ Members ════════════════════════\n");
-            foreach(Member member in members)
-            {
-                this.verboseMemberInfo(member);
-            }
-             return this.getMemberId();
-        }
-
-        public MemberMenu displayMember(Member member)
-        {
+            Console.ForegroundColor = ConsoleColor.White;
+            Console.BackgroundColor = ConsoleColor.DarkBlue;
+            Console.Write($"\n {msg}");
+            Console.ResetColor();
+            Console.ReadKey();
             Console.Clear();
-            this.verboseMemberInfo(member);
-            return this.getMemberMenuChoice();
-        }
-
-        public void verboseMemberInfo(Member member)
-        {
-            Console.WriteLine($"Name: {member.Name}");
-            Console.WriteLine($"PersonalNumber: {member.PersonalNumber}");
-            Console.WriteLine($"Member id: {member.MemberId}");
-            Console.WriteLine($"Nr of boats: {member.NrOfBoats}");
-            this.displayBoats(member);
-            Console.WriteLine("\n═══════════════════════════════════════════════");
-        }
-
-         public int getChosenBoat(Member member, string message)
-        {
-            int index;
-            do
-            {
-                Console.WriteLine(message);
-                Console.WriteLine("Press nr 0 to go back.");
-                this.displayBoats(member);
-                Console.Write(">Enter nr: ");
-                if (int.TryParse(Console.ReadLine(), out index) && index >= 0 
-                    && index <= member.NrOfBoats)
-                {
-                    Console.Clear();
-                    return index;
-                }
-            } while(true);
-        }
-
-
-        public void displayBoats(Member member)
-        {
-            foreach (Boat boat in member.Boats)
-            {
-                Console.WriteLine("-----------------------------------------------");
-                Console.WriteLine($"Boat nr {boat.Id}");
-                Console.WriteLine($"Type: {boat.Type}\nLength: {boat.Length}");
-
-            }
-        }
-       
+        }     
     }
 }
