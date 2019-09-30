@@ -7,11 +7,12 @@ using System.Collections.Generic;
 namespace model
 {
     public class MemberRegistry {
-        private string _filePath ="model/members.json";
+        private string _filePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "members.json");
+        
         private List<Member> _memberList = new List<Member>();
 
-         public IReadOnlyList<Member> MemberList => this._memberList.AsReadOnly();
-         
+        public IReadOnlyList<Member> MemberList => this._memberList.AsReadOnly();
+  
 
         public MemberRegistry()
         {
@@ -28,7 +29,7 @@ namespace model
             string memberInfo = JsonConvert.SerializeObject(this._memberList);
             File.WriteAllText(this._filePath, memberInfo);	
         }
-
+  
         public bool validateMemberId(string id)
         {
             if (!this._memberList.Exists(member => member.MemberId == id))
