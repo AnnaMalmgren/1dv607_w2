@@ -35,7 +35,7 @@ namespace controller
         public void mainMenu()
         {
             MainMenu choice = this._view.getMainMenuChoice();
-
+            
             switch (choice)
             {
                 case MainMenu.AddMember:
@@ -61,7 +61,14 @@ namespace controller
             string memberId = this._memberView.getMemberId();
             if (!String.IsNullOrEmpty(memberId))
             {
-                this.memberEvents(memberId);
+                if (memberId == "0")
+                {
+                    this.mainMenu();
+                }
+                else
+                {
+                    this.memberEvents(memberId);
+                }
             } 
         }
 
@@ -197,18 +204,18 @@ namespace controller
             
         private void changeBoat(Member member, int boatId)
         {
-            Boat boat = member.getBoat(boatId);
+            
             ChangeBoat menuChoice = this._memberView.getChangeBoatChoice();
             switch (menuChoice)
             {
                 case ChangeBoat.ChangeType:
-                boat.Type = this._memberView.getBoatType();
-                this._registry.updateBoatList(member, boat);
+                BoatTypes type = this._memberView.getBoatType();
+                this._registry.updateBoatList(member, boatId, type);
                 break;
 
                 case ChangeBoat.ChangeLength:
-                boat.Length = this._memberView.getBoatLength();
-                this._registry.updateBoatList(member, boat);
+                float length = this._memberView.getBoatLength();
+                this._registry.updateBoatList(member, boatId, length);
                 break;
             }      
         }

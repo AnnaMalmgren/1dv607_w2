@@ -34,10 +34,10 @@ namespace model
 
             set 
             {
-                int index;
-                if (int.TryParse(value, out index) || value.Length != 10)
+                double id;
+                if (!double.TryParse(value, out id) || value.Length != 10)
                 {
-                    throw new ArgumentNullException("Personal number must consist of ten numbers");
+                    throw new ArgumentException("Personal number must be format YYMMDDNNNN");
                 }
 
                 this._personalNumber = value;
@@ -53,7 +53,7 @@ namespace model
             this.Boats = new List<Boat>();
         }
 
-        public string generateId() 
+        public void generateId() 
         {
             string id = this._name.Substring(0, 2);
             Random rnd = new Random();
@@ -64,8 +64,9 @@ namespace model
             for (int i = 0; i < 2; i++)
             {
                id += (char)rnd.Next('a','z');  
-            }    
-            return id;
+            } 
+
+            this.MemberId = id;
         }
 
 

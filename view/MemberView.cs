@@ -13,15 +13,35 @@ namespace view
             this._consoleView = new ConsoleView();
         }
         public string getMemberName() 
-        {        
-            this._consoleView.setBlueText(">Enter member name: ");
-            return Console.ReadLine();
+        {
+            do
+            {      
+                this._consoleView.setBlueText(">Enter member name: ");
+                string name = Console.ReadLine();
+                if (!String.IsNullOrEmpty(name))
+                {
+                    return name; 
+                }
+                this._consoleView.setErrorMsg("Member name must be entered");
+                this._consoleView.GetKeyPress("Press any key to continue");
+            } while(true);
         }
 
         public string getMemberPersonalNr()
-        {
-            this._consoleView.setBlueText(">Enter member personal number: ");
-            return Console.ReadLine();
+        { 
+            do
+            {      
+                this._consoleView.setBlueText(">Enter members personal number: ");
+                double id;
+
+                string personalNr = Console.ReadLine();
+                if (double.TryParse(personalNr, out id) && personalNr.Length == 10)
+                {
+                    return personalNr;
+                }
+                this._consoleView.setErrorMsg("Personal number  must have format YYMMDDNNNN");
+                this._consoleView.GetKeyPress("Press any key to continue");
+            } while(true);
         }
 
         public string getMemberId()
@@ -167,6 +187,8 @@ namespace view
                 Console.WriteLine(formatedOutput);
                 Console.WriteLine("______________________________________________\n");
             }
+
+            this._consoleView.setBlueText("To go back to main menu enter 0\n");
         }
 
         public void showVerboseList(IReadOnlyList<Member> members)
@@ -177,6 +199,8 @@ namespace view
             {
                 this.verboseMemberInfo(member);
             }
+
+            this._consoleView.setBlueText("To go back to main menu enter 0\n");
         }
     }
 }

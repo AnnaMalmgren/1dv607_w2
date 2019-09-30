@@ -36,7 +36,7 @@ namespace model
             
             if (!this._memberList.Exists(member => member.MemberId == id))
             {
-                throw new NullReferenceException($"No member with id: {id}");
+                throw new ArgumentException($"No member with id: {id}");
             }
 
             return this._memberList.Find(member => member.MemberId == id);
@@ -50,13 +50,15 @@ namespace model
            this.writeToMemberFile();	
         }
 
-        private void uniqueId(Member newMember)
+        private string uniqueId(Member newMember)
         {
-            bool idExists = this._memberList.Exists(member => member.MemberId == newMember.MemberId);
             do 
             {
                 newMember.generateId();
-            } while (idExists);
+                if(!this._memberList.Exists(member => member.MemberId == newMember.MemberId)) {
+                    return newMember.MemberId;
+                }
+            } while (true);
         }
 
         public void saveMember(string name, string personalNr)
@@ -92,13 +94,25 @@ namespace model
                 this.writeToMemberFile();
         }
 
-        public void updateBoatList(Member member, Boat updatedBoat)
+        public void updateBoatList(Member member, int boatId, float length)
         {
              member.Boats
-                .Where(boat => boat.Id == updatedBoat.Id)
+                .Where(boat => boat.Id == boatId)
                 .ToList()
                 .ForEach(boat => {
-                    boat = updatedBoat;
+                    boat.Length = length;
+                });
+                
+                this.writeToMemberFile();
+        }
+
+        public void updateBoatList(Member member, int boatId, BoatTypes type)
+        {
+             member.Boats
+                .Where(boat => boat.Id == boatId)
+                .ToList()
+                .ForEach(boat => {
+                    boat.Type = type;
                 });
                 
                 this.writeToMemberFile();
