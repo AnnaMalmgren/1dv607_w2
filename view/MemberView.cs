@@ -14,6 +14,7 @@ namespace view
         }
         public string getMemberName() 
         {
+            Console.Clear();
             do
             {      
                 this._consoleView.setBlueText(">Enter member name: ");
@@ -53,12 +54,12 @@ namespace view
         public void displayMember(Member member)
         {
             Console.Clear();
+            Console.WriteLine("\n═══════════════ Member Information ════════════════════\n");
             this.verboseMemberInfo(member);
         }
 
         public void verboseMemberInfo(Member member)
         {
-            Console.WriteLine("\n═══════════════ Member Information ════════════════════\n");
             Console.WriteLine($"Name: {member.Name}");
             Console.WriteLine($"PersonalNumber: {member.PersonalNumber}");
             Console.WriteLine($"Member id: {member.MemberId}");
@@ -91,6 +92,7 @@ namespace view
 
          public int getChosenBoat(Member member, string message)
         {
+            Console.Clear();
             int index;
             do
             {
@@ -121,14 +123,25 @@ namespace view
 
         public float getBoatLength() 
         {
-            this._consoleView.setBlueText(">Enter boats length in feet: ");
-            float.TryParse(Console.ReadLine(), out float length);
-            return length;
+            Console.Clear();
+            do 
+            {
+                this._consoleView.setBlueText(">Enter boats length in feet: ");
+                string userInput = Console.ReadLine();
+                float length;
+                if (float.TryParse(userInput, out length) && length > 0)
+                {
+                    return length;
+                }
+                this._consoleView.setErrorMsg("Error boath length not valid");
+                this._consoleView.GetKeyPress("Press any key to continue");
+            } while(true);
         }
 
 
         public BoatTypes getBoatType() 
         {
+            Console.Clear();
             int index;
             do
             { 
@@ -178,6 +191,7 @@ namespace view
         
         public void showCompactList(IReadOnlyList<Member> members)
         {
+            Console.Clear();
             this._consoleView.setBlueText("To Look at a specific member enter the member id below");
             Console.WriteLine("\n═══════════════════ Members ════════════════════════\n");
             foreach(Member member in members)
@@ -193,6 +207,7 @@ namespace view
 
         public void showVerboseList(IReadOnlyList<Member> members)
         {
+            Console.Clear();
             this._consoleView.setBlueText("To Look at a specific member enter the member id at the bottom");
             Console.WriteLine("\n═══════════════════ Members ════════════════════════\n");
             foreach(Member member in members)

@@ -30,15 +30,22 @@ namespace model
             File.WriteAllText($"{this._dir}{this._filePath}", memberInfo);	
         }
 
-
-        public Member getMember(string id) 
+        public bool validateMemberId(string id)
         {
-            
             if (!this._memberList.Exists(member => member.MemberId == id))
             {
-                throw new ArgumentException($"No member with id: {id}");
+                return false;
+            }
+            else
+            {
+                return true;
             }
 
+        }
+
+
+        public Member getMember(string id) 
+        {     
             return this._memberList.Find(member => member.MemberId == id);
         }
 
@@ -59,7 +66,7 @@ namespace model
                     return newMember.MemberId;
                 }
             } while (true);
-        }
+        } 
 
         public void saveMember(string name, string personalNr)
         {

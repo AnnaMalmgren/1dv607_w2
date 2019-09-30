@@ -40,8 +40,7 @@ namespace controller
             {
                 case MainMenu.AddMember:
                     this.createMember();
-                    this._view.GetKeyPress("Member registered, press any key to continue");
-                    this.mainMenu();
+                    this.setEventRespone("Member registered, press any key to continue");
                     break;
 
                 case MainMenu.CompactList:
@@ -67,17 +66,31 @@ namespace controller
                 }
                 else
                 {
-                    this.memberEvents(memberId);
+                    this.Events(memberId);
                 }
             } 
         }
 
-        public void memberEvents(string memberId)
+        public void Events(string memberId)
         { 
-            Member member = this._registry.getMember(memberId);
-            this._memberView.displayMember(member);
-            MemberMenu choice = this._view.getMemberMenuChoice();
+            if (!this._registry.validateMemberId(memberId))
+            {
+                this._view.setErrorMsg("Member id does not exist");
+                this._view.GetKeyPress("\n Press any key to continue"); 
+                this.mainMenu();
+            }
+            else
+            {
+                Member member = this._registry.getMember(memberId);
+                this._memberView.displayMember(member);
+                MemberMenu choice = this._view.getMemberMenuChoice();
+                this.memberMenuEvents(member, choice);
+            }      
+        }
 
+        
+        private void memberMenuEvents(Member member, MemberMenu choice)
+        {
             switch (choice)
             {
                 case MemberMenu.GoBack:
@@ -90,47 +103,25 @@ namespace controller
                     break;
 
                 case MemberMenu.DeleteMember:
-                    if (this.confirmDelete($"member {memberId}"))
+                    if (this.confirmDelete($"member {member.MemberId}"))
                     {
-                        this._registry.deleteMember(memberId);
+                        this._registry.deleteMember(member.MemberId);
                         this.setEventRespone("Member deleted, press any key to continue");
                     }
                     this.setEventRespone("Member not deleted, press any key to continue");
                     break;
 
-                case MemberMenu.RegisterBoat:
-                    this.registerBoat(memberId);
+                 case MemberMenu.RegisterBoat:
+                    this.registerBoat(member.MemberId);
                     this.setEventRespone("Boat registered, press any key to continue");
                     break;
 
                 case MemberMenu.DeleteBoat:
-                    string deleteMsg = "Enter the nr of the boat you want to delete below.";
-                    int boatId = this.getBoatId(member, deleteMsg);
-
-                    if (boatId != 0)
-                    {  
-                        this.getDeleteBoat(member, boatId);
-                    }
-                    else
-                    {
-                        this.setEventRespone("Member has no boats, press any key to go back.");
-                    }
-                    
+                    this.doDeleteBoat(member);
                     break;
 
                 case MemberMenu.ChangeBoat:
-                    string changeMsg = "Enter the nr of the boat you want to change below.";
-                    int changeId = this.getBoatId(member, changeMsg);
-
-                    if (changeId != 0)
-                    {
-                        this.changeBoat(member, changeId);
-                        this.setEventRespone("Boat has been changed, press any key to continue");
-                    }
-                    else
-                    {
-                        this.setEventRespone("Member has no boats, press any key to go back");
-                    }
+                    this.doChangeBoat(member);
                     break;
             }
         }
@@ -139,12 +130,6 @@ namespace controller
         {
              this._view.GetKeyPress(msg);   
              this.mainMenu();
-        }
-
-        private bool confirmDelete(string deleteMsg)
-        {
-            string confirm = this._view.getDeleteConfirm(deleteMsg);
-            return confirm == "y" ? true : false; 
         }
 
         private void displayCompactList() => this._memberView.showCompactList(this._registry.MemberList);
@@ -172,7 +157,6 @@ namespace controller
                 member.PersonalNumber = this._memberView.getMemberPersonalNr();
                 this._registry.updateMember(member);
                 break;
-
             }   
         }
 
@@ -189,7 +173,31 @@ namespace controller
             }
         }
 
-        private void getDeleteBoat(Member member, int boatId)
+        private void registerBoat(string id)
+        {
+            Member member = this._registry.getMember(id);
+            BoatTypes type = this._memberView.getBoatType();
+            float length = this._memberView.getBoatLength();
+            this._registry.addToBoatList(member, type, length);
+        }
+
+
+        private void doDeleteBoat(Member member)
+        {
+            string deleteMsg = "Enter the nr of the boat you want to delete below\n";
+            int boatId = this.getBoatId(member, deleteMsg);
+
+            if (boatId != 0)
+            {  
+                this.handleDeleteBoat(member, boatId);
+            }
+            else
+            {
+                this.setEventRespone("Member has no boats, press any key to go back.");
+            }
+        }
+
+        private void handleDeleteBoat(Member member, int boatId)
         {
             if (this.confirmDelete($"boat {boatId}")) 
             {    
@@ -199,6 +207,22 @@ namespace controller
             else
             {
                 this.setEventRespone("Boat not deleted, press any key to continue");
+            }
+        }
+
+        private void doChangeBoat(Member member)
+        {
+            string changeMsg = "Enter the nr of the boat you want to change below\n";
+            int changeId = this.getBoatId(member, changeMsg);
+
+            if (changeId != 0)
+            {
+                this.changeBoat(member, changeId);
+                this.setEventRespone("Boat has been changed, press any key to continue");
+            }
+            else
+            {
+                this.setEventRespone("Member has no boats, press any key to go back");
             }
         }
             
@@ -219,14 +243,11 @@ namespace controller
                 break;
             }      
         }
-
-        private void registerBoat(string id)
+        
+        private bool confirmDelete(string deleteMsg)
         {
-            Member member = this._registry.getMember(id);
-            BoatTypes type = this._memberView.getBoatType();
-            float length = this._memberView.getBoatLength();
-            this._registry.addToBoatList(member, type, length);
+            string confirm = this._view.getDeleteConfirm(deleteMsg);
+            return confirm == "y" ? true : false; 
         }
-
     }
 }

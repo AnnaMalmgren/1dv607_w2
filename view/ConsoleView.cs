@@ -7,7 +7,8 @@ namespace view
 
         public MainMenu getMainMenuChoice() 
         {
-             int index;
+            Console.Clear();
+            int index;
             do
             {  
                 Console.WriteLine("\n═══════════════════ Main Menu ══════════════════════\n");;
@@ -64,7 +65,7 @@ namespace view
         {
             do
             {
-                this.setBlueText($"Are you sure you want to delete {msg} (y/n): ");
+                this.setBlueText($"\nAre you sure you want to delete {msg} (y/n): ");
                 string confirm = Console.ReadLine();
                 if (confirm == "y" || confirm == "n")
                 {
@@ -78,8 +79,7 @@ namespace view
 
         public void setErrorMsg(string msg)
         {
-            Console.BackgroundColor = ConsoleColor.Red;
-            Console.ForegroundColor = ConsoleColor.White;
+            Console.ForegroundColor = ConsoleColor.Red;
             Console.WriteLine($"\n{msg}\n");
             Console.ResetColor();
         }
@@ -94,7 +94,7 @@ namespace view
             Console.Clear();
         }
 
-         public void setBlueText(string msg)
+        public void setBlueText(string msg)
         {
             Console.ForegroundColor = ConsoleColor.Blue;
             Console.Write(msg); 
