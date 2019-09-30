@@ -7,8 +7,7 @@ using System.Collections.Generic;
 namespace model
 {
     public class MemberRegistry {
-        private string _dir = Directory.GetCurrentDirectory();
-        private string _filePath ="\\Data\\members.json";
+        private string _filePath ="model/members.json";
         private List<Member> _memberList = new List<Member>();
 
          public IReadOnlyList<Member> MemberList => this._memberList.AsReadOnly();
@@ -21,13 +20,13 @@ namespace model
 
         public List<Member> readMemberFile()
         {
-            string jsonData = System.IO.File.ReadAllText($"{this._dir}{this._filePath}");
+            string jsonData = System.IO.File.ReadAllText(this._filePath);
             return JsonConvert.DeserializeObject<List<Member>>(jsonData) ?? new List<Member>();
         }
 
         private void writeToMemberFile() {
             string memberInfo = JsonConvert.SerializeObject(this._memberList);
-            File.WriteAllText($"{this._dir}{this._filePath}", memberInfo);	
+            File.WriteAllText(this._filePath, memberInfo);	
         }
 
         public bool validateMemberId(string id)
