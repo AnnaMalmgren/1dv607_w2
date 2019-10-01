@@ -1,53 +1,49 @@
 using System; 
-using System.Collections.Generic;
 using model;
+using System.Collections.Generic;
 
 namespace view
 {
-    public class MemberView 
+    public class MemberView : IMessageView
     {
-        private ConsoleView _consoleView;
-
-        public MemberView()
-        {
-            this._consoleView = new ConsoleView();
-        }
         public string getMemberName() 
         {
             Console.Clear();
             do
             {      
-                this._consoleView.setBlueText(">Enter member name: ");
+                this.setBlueText(">Enter member name: ");
                 string name = Console.ReadLine();
                 if (!String.IsNullOrEmpty(name))
                 {
                     return name; 
                 }
-                this._consoleView.setErrorMsg("Member name must be entered");
-                this._consoleView.GetKeyPress("Press any key to continue");
+                this.setErrorMsg("Member name must be entered");
+                this.GetKeyPress("Press any key to continue");
             } while(true);
         }
 
         public string getMemberPersonalNr()
         { 
+            int personalNrLength = 10;
             do
             {      
-                this._consoleView.setBlueText(">Enter members personal number: ");
+                this.setBlueText(">Enter members personal number: ");
                 double id;
 
                 string personalNr = Console.ReadLine();
-                if (double.TryParse(personalNr, out id) && personalNr.Length == 10)
+                if (double.TryParse(personalNr, out id) && 
+                    personalNr.Length == personalNrLength)
                 {
                     return personalNr;
                 }
-                this._consoleView.setErrorMsg("Personal number  must have format YYMMDDNNNN");
-                this._consoleView.GetKeyPress("Press any key to continue");
+                this.setErrorMsg("Personal number  must have format YYMMDDNNNN");
+                this.GetKeyPress("Press any key to continue");
             } while(true);
         }
 
         public string getMemberId()
         {
-            this._consoleView.setBlueText(">Enter members member id: ");
+            this.setBlueText(">Enter members member id: ");
             return Console.ReadLine();
         }
 
@@ -64,41 +60,19 @@ namespace view
             Console.WriteLine($"PersonalNumber: {member.PersonalNumber}");
             Console.WriteLine($"Member id: {member.MemberId}");
             Console.WriteLine($"Nr of boats: {member.NrOfBoats}");
-            this.displayBoats(member);
+            this.displayBoats(member.boatsToString());
             Console.WriteLine("\n═══════════════════════════════════════════════\n");
         }
 
-        public ChangeMember getChangeMemberChoice() 
-        {
-            int index;
-            do
-            {  
-                Console.WriteLine("\n - Change member information ---------------------\n");
-                Console.WriteLine($" 1. Change members name");
-                Console.WriteLine($" 2. Change members personal number");
-                Console.WriteLine("\n ══════════════════════════════════════════\n");
-                this._consoleView.setBlueText("\n>Enter menu selection [1-2]: ");
-                if (int.TryParse(Console.ReadLine(), out index) && index >= 1 
-                    && index <= 2)
-                {
-                    Console.Clear();
-                    return (ChangeMember)index;
-                }
-
-                this._consoleView.setErrorMsg("Error enter number 1 or 2");
-                this._consoleView.GetKeyPress("Press any key to continue");
-            } while (true);
-        }
-
-         public int getChosenBoat(Member member, string message)
+        public int getChosenBoat(Member member, string message)
         {
             Console.Clear();
             int index;
             do
             {
-                this._consoleView.setBlueText(message);
-                this.displayBoats(member);
-                this._consoleView.setBlueText("\n>Enter nr: ");
+                this.setBlueText(message);
+                this.displayBoats(member.boatsToString());
+                this.setBlueText("\n>Enter nr: ");
                 if (int.TryParse(Console.ReadLine(), out index) && index >= 1
                     && index <= member.NrOfBoats)
                 {
@@ -106,19 +80,14 @@ namespace view
                     return index;
                 }
                 
-                this._consoleView.setErrorMsg($"Error enter number 1 and {member.NrOfBoats}");
-                this._consoleView.GetKeyPress("Press any key to continue");
+                this.setErrorMsg($"Error enter a number between 1 and {member.NrOfBoats}");
+                this.GetKeyPress("Press any key to continue");
             } while(true);
         }
 
-        public void displayBoats(Member member)
+        public void displayBoats(string boatsInfo)
         {
-            foreach (Boat boat in member.Boats)
-            {
-                Console.WriteLine("-----------------------------------------------");
-                Console.WriteLine($"Boat nr {boat.Id}");
-                Console.WriteLine($"Type: {boat.Type}\nLength: {boat.Length}");
-            }
+            Console.WriteLine(boatsInfo);
         }
 
         public float getBoatLength() 
@@ -126,22 +95,23 @@ namespace view
             Console.Clear();
             do 
             {
-                this._consoleView.setBlueText(">Enter boats length in feet: ");
+                this.setBlueText(">Enter boats length in feet: ");
                 string userInput = Console.ReadLine();
                 float length;
                 if (float.TryParse(userInput, out length) && length > 0)
                 {
                     return length;
                 }
-                this._consoleView.setErrorMsg("Error boath length not valid");
-                this._consoleView.GetKeyPress("Press any key to continue");
+                this.setErrorMsg("Error boath length not valid");
+                this.GetKeyPress("Press any key to continue");
+
             } while(true);
         }
-
 
         public BoatTypes getBoatType() 
         {
             Console.Clear();
+            int nrOfBoatTypes = 5;
             int index;
             do
             { 
@@ -152,47 +122,25 @@ namespace view
                 Console.WriteLine(" 4. Canoe");
                 Console.WriteLine(" 5. Other");
                 Console.WriteLine("\n ══════════════════════════════════════════\n");
-                this._consoleView.setBlueText("Enter the nr of the boats type \n>Enter menu selection nr [1-5]: ");
+                this.setBlueText("Enter the nr of the boats type \n>Enter menu selection nr [1-5]: ");
                 
                 if (int.TryParse(Console.ReadLine(), out index) && index >= 1
-                    && index <= 5)
+                    && index <= nrOfBoatTypes)
                 {
                     Console.Clear();
                     return (BoatTypes)index;
                 }
 
-                this._consoleView.setErrorMsg("Error enter number 1 or 5");
-                this._consoleView.GetKeyPress("Press any key to continue");
+                this.setErrorMsg("Error enter number 1 or 5");
+                this.GetKeyPress("Press any key to continue");
             } while (true);
         
         }
-
-         public ChangeBoat getChangeBoatChoice() 
-        {
-            int index;
-            do
-            {     
-                Console.WriteLine("\n - Change boat information -------------------------\n");
-                Console.WriteLine(" 1. Change type");
-                Console.WriteLine($" 2. Change length");
-                Console.WriteLine("\n ══════════════════════════════════════════\n");
-                this._consoleView.setBlueText("\n>Enter menu selection [1-2]: ");
-                if (int.TryParse(Console.ReadLine(), out index) && index >= 1 
-                    && index <= 2)
-                {
-                    Console.Clear();
-                    return (ChangeBoat)index;
-                }
-                this._consoleView.setErrorMsg("Error enter number 1 or 2");
-                this._consoleView.GetKeyPress("Press any key to continue");
-            } while (true);
-        }
-
         
         public void showCompactList(IReadOnlyList<Member> members)
         {
             Console.Clear();
-            this._consoleView.setBlueText("To Look at a specific member enter the member id below");
+            this.setBlueText("To Look at a specific member enter the member id below");
             Console.WriteLine("\n═══════════════════ Members ════════════════════════\n");
             foreach(Member member in members)
             {
@@ -202,20 +150,44 @@ namespace view
                 Console.WriteLine("______________________________________________\n");
             }
 
-            this._consoleView.setBlueText("To go back to main menu enter 0\n");
+            this.setBlueText("To go back to main menu enter 0\n");
         }
 
         public void showVerboseList(IReadOnlyList<Member> members)
         {
             Console.Clear();
-            this._consoleView.setBlueText("To Look at a specific member enter the member id at the bottom");
+            this.setBlueText("To Look at a specific member enter the member id at the bottom");
             Console.WriteLine("\n═══════════════════ Members ════════════════════════\n");
             foreach(Member member in members)
             {
                 this.verboseMemberInfo(member);
             }
 
-            this._consoleView.setBlueText("To go back to main menu enter 0\n");
+            this.setBlueText("To go back to main menu enter 0\n");
+        }
+
+        public void setErrorMsg(string msg)
+        {
+            Console.ForegroundColor = ConsoleColor.Red;
+            Console.WriteLine($"\n{msg}\n");
+            Console.ResetColor();
+        }
+
+        public void GetKeyPress(string msg)
+        {
+            Console.ForegroundColor = ConsoleColor.White;
+            Console.BackgroundColor = ConsoleColor.DarkBlue;
+            Console.Write($"\n {msg}");
+            Console.ResetColor();
+            Console.ReadKey();
+            Console.Clear();
+        }
+
+        public void setBlueText(string msg)
+        {
+            Console.ForegroundColor = ConsoleColor.Blue;
+            Console.Write(msg); 
+            Console.ResetColor();
         }
     }
 }

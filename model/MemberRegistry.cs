@@ -16,7 +16,16 @@ namespace model
 
         public MemberRegistry()
         {
+            this.CreateEmptyFile();
             this._memberList = this.readMemberFile();
+        }
+
+        public void CreateEmptyFile()
+        {
+            if (!File.Exists(this._filePath))
+            {
+                File.Create(this._filePath).Dispose();
+            }
         }
 
         public List<Member> readMemberFile()
@@ -131,6 +140,7 @@ namespace model
             member.updateBoatsId();
             this.writeToMemberFile();
         }
+       
     }
 }
 

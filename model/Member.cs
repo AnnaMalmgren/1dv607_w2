@@ -8,6 +8,8 @@ namespace model
         private string _name;
         private string _personalNumber;
 
+        private int personalNrLength = 10;
+
         public List<Boat> Boats { get; private set; }
 
         public int NrOfBoats => Boats.Count;
@@ -35,7 +37,7 @@ namespace model
             set 
             {
                 double id;
-                if (!double.TryParse(value, out id) || value.Length != 10)
+                if (!double.TryParse(value, out id) || value.Length != this.personalNrLength)
                 {
                     throw new ArgumentException("Personal number must be format YYMMDDNNNN");
                 }
@@ -88,5 +90,19 @@ namespace model
         }
         
         public void deleteBoat(Boat boatToRemove) => this.Boats.Remove(boatToRemove);
+
+
+        public string boatsToString()
+        {
+            string boatString = "";
+            foreach (Boat boat in this.Boats)
+            {
+                boatString += "\n-----------------------------------------------\n";
+                boatString += $"Boat nr {boat.Id}\nType: {boat.Type}\nLength: {boat.Length}";
+            }
+
+            return boatString;
+        }
+
     }
 }

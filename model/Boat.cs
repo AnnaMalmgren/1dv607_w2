@@ -39,6 +39,12 @@ namespace model
             this.Length = length;
             this.Id = id;
         }
+
+        public string toString()
+        {
+           return$"Boat nr {this.Id}\nType: {this.Type}\nLength: {this.Length}";
+        }
+        
     }
 
 }

@@ -2,12 +2,12 @@ using System;
 
 namespace view
 {
-    public class ConsoleView 
+    public class MenusView : IMessageView
     {
-
         public MainMenu getMainMenuChoice() 
         {
             Console.Clear();
+            int mainMenuLength = 3;
             int index;
             do
             {  
@@ -19,8 +19,8 @@ namespace view
                 Console.WriteLine("\n ══════════════════════════════════════════\n");
                 this.setBlueText(">Enter menu selection [0-3]: "); 
 
-                if (int.TryParse(Console.ReadLine(), out index) && index >= 0 
-                    && index <= 3)
+                if (int.TryParse(Console.ReadLine(), out index) && index >= 0
+                    && index <= mainMenuLength)
                 {
                     Console.Clear();
                     return (MainMenu)index;
@@ -34,6 +34,7 @@ namespace view
 
         public MemberMenu getMemberMenuChoice()
         {
+            int memberMenuLength = 5;
             int index;
             do
             {  
@@ -48,7 +49,7 @@ namespace view
                 this.setBlueText(">Enter menu selection [0-5]: ");
 
                 if (int.TryParse(Console.ReadLine(), out index) && index >= 0 
-                    && index <= 5)
+                    && index <= memberMenuLength)
                 {
                     Console.Clear();
 
@@ -58,6 +59,29 @@ namespace view
                 this.setErrorMsg("Error! Enter a number between 0 and 5");
                 this.GetKeyPress("Press any key to continue");
 
+            } while (true);
+        }
+
+        public ChangeMember getChangeMemberChoice() 
+        {
+            int changeMenuLength = 2;
+            int index;
+            do
+            {  
+                Console.WriteLine("\n - Change member information ---------------------\n");
+                Console.WriteLine($" 1. Change members name");
+                Console.WriteLine($" 2. Change members personal number");
+                Console.WriteLine("\n ══════════════════════════════════════════\n");
+                this.setBlueText("\n>Enter menu selection [1-2]: ");
+                if (int.TryParse(Console.ReadLine(), out index) && index >= 1 
+                    && index <= changeMenuLength)
+                {
+                    Console.Clear();
+                    return (ChangeMember)index;
+                }
+
+                this.setErrorMsg("Error enter number 1 or 2");
+                this.GetKeyPress("Press any key to continue");
             } while (true);
         }
 
@@ -73,6 +97,28 @@ namespace view
                 }
              
                 this.setErrorMsg("Error you have to enter y for yes or n for no");
+                this.GetKeyPress("Press any key to continue");
+            } while (true);
+        }
+
+        public ChangeBoat getChangeBoatChoice() 
+        {
+            int changeMenuLength = 2;
+            int index;
+            do
+            {     
+                Console.WriteLine("\n - Change boat information -------------------------\n");
+                Console.WriteLine(" 1. Change type");
+                Console.WriteLine(" 2. Change length");
+                Console.WriteLine("\n ══════════════════════════════════════════\n");
+                this.setBlueText("\n>Enter menu selection [1-2]: ");
+                if (int.TryParse(Console.ReadLine(), out index) && index >= 1 
+                    && index <= changeMenuLength)
+                {
+                    Console.Clear();
+                    return (ChangeBoat)index;
+                }
+                this.setErrorMsg("Error enter number 1 or 2");
                 this.GetKeyPress("Press any key to continue");
             } while (true);
         }

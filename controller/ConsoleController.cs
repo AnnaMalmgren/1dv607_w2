@@ -8,10 +8,11 @@ namespace controller
     public class ConsoleController
     {
         private MemberRegistry _registry;
-        private ConsoleView _view;
+        private MenusView _view;
         private MemberView _memberView;
+        private int memberHasNoBoats = 0;
 
-        public ConsoleController(ConsoleView view, MemberView mView)
+        public ConsoleController(MenusView view, MemberView mView)
         {
             this._view = view;
             this._memberView = mView;
@@ -44,12 +45,12 @@ namespace controller
                     break;
 
                 case MainMenu.CompactList:
-                    this.displayCompactList();
+                    this._memberView.showCompactList(this._registry.MemberList);
                     this.collectMemberEvents(); 
                     break;
 
                 case MainMenu.VerboseList:
-                    this.displayVerboseList();
+                    this._memberView.showVerboseList(this._registry.MemberList);
                     this.collectMemberEvents();
                     break;
             }
@@ -58,16 +59,14 @@ namespace controller
         private void collectMemberEvents()
         { 
             string memberId = this._memberView.getMemberId();
-            if (!String.IsNullOrEmpty(memberId))
+            string displayMainMenu = "0";
+            if (memberId == displayMainMenu)
             {
-                if (memberId == "0")
-                {
-                    this.mainMenu();
-                }
-                else
-                {
-                    this.Events(memberId);
-                }
+                this.mainMenu();
+            }
+            else
+            {
+                this.Events(memberId);
             } 
         }
 
@@ -87,7 +86,6 @@ namespace controller
                 this.memberMenuEvents(member, choice);
             }      
         }
-
         
         private void memberMenuEvents(Member member, MemberMenu choice)
         {
@@ -132,10 +130,6 @@ namespace controller
              this.mainMenu();
         }
 
-        private void displayCompactList() => this._memberView.showCompactList(this._registry.MemberList);
-        
-        private void displayVerboseList() => this._memberView.showVerboseList(this._registry.MemberList);
-
         private void createMember() 
         {
            string name = this._memberView.getMemberName();
@@ -145,7 +139,7 @@ namespace controller
         
         private void changeMember(Member member)
         {
-            ChangeMember menuChoice = this._memberView.getChangeMemberChoice();
+            ChangeMember menuChoice = this._view.getChangeMemberChoice();
             switch (menuChoice)
             {
                 case ChangeMember.ChangeName:
@@ -162,14 +156,14 @@ namespace controller
 
         private int getBoatId(Member member, string msg)
         {
-            if (member.NrOfBoats != 0)
+            if (member.NrOfBoats != this.memberHasNoBoats)
             {
                 int boatId = this._memberView.getChosenBoat(member, msg);
                 return boatId;
             }
             else
             {
-                return 0;
+                return this.memberHasNoBoats;
             }
         }
 
@@ -187,7 +181,7 @@ namespace controller
             string deleteMsg = "Enter the nr of the boat you want to delete below\n";
             int boatId = this.getBoatId(member, deleteMsg);
 
-            if (boatId != 0)
+            if (boatId != this.memberHasNoBoats)
             {  
                 this.handleDeleteBoat(member, boatId);
             }
@@ -215,7 +209,7 @@ namespace controller
             string changeMsg = "Enter the nr of the boat you want to change below\n";
             int changeId = this.getBoatId(member, changeMsg);
 
-            if (changeId != 0)
+            if (changeId != this.memberHasNoBoats)
             {
                 this.changeBoat(member, changeId);
                 this.setEventRespone("Boat has been changed, press any key to continue");
@@ -229,7 +223,7 @@ namespace controller
         private void changeBoat(Member member, int boatId)
         {
             
-            ChangeBoat menuChoice = this._memberView.getChangeBoatChoice();
+            ChangeBoat menuChoice = this._view.getChangeBoatChoice();
             switch (menuChoice)
             {
                 case ChangeBoat.ChangeType:
