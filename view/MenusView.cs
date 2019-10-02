@@ -9,6 +9,7 @@ namespace view
             Console.Clear();
             int mainMenuLength = 3;
             int index;
+            //waits for user to enter main menu choice
             do
             {  
                 Console.WriteLine("\n═══════════════════ Main Menu ══════════════════════\n");;
@@ -36,6 +37,7 @@ namespace view
         {
             int memberMenuLength = 5;
             int index;
+            // waits for user to enter member menu choice
             do
             {  
                 Console.WriteLine("\n - Menu -----------------------------------\n");
@@ -66,6 +68,7 @@ namespace view
         {
             int changeMenuLength = 2;
             int index;
+            // waits for user to input change member choice
             do
             {  
                 Console.WriteLine("\n - Change member information ---------------------\n");
@@ -87,6 +90,7 @@ namespace view
 
         public string getDeleteConfirm(string msg)
         {
+            // user should press y for confirm delete and n for no.
             do
             {
                 this.setBlueText($"\nAre you sure you want to delete {msg} (y/n): ");
@@ -105,6 +109,7 @@ namespace view
         {
             int changeMenuLength = 2;
             int index;
+            // waits for user to enter change boat choice
             do
             {     
                 Console.WriteLine("\n - Change boat information -------------------------\n");

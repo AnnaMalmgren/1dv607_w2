@@ -9,14 +9,17 @@ namespace view
         public string getMemberName() 
         {
             Console.Clear();
+            // waits for user to enter name;
             do
             {      
                 this.setBlueText(">Enter member name: ");
                 string name = Console.ReadLine();
+
                 if (!String.IsNullOrEmpty(name))
                 {
                     return name; 
                 }
+
                 this.setErrorMsg("Member name must be entered");
                 this.GetKeyPress("Press any key to continue");
             } while(true);
@@ -25,6 +28,7 @@ namespace view
         public string getMemberPersonalNr()
         { 
             int personalNrLength = 10;
+            //waits for user to enter a correct formated personal number
             do
             {      
                 this.setBlueText(">Enter members personal number: ");
@@ -68,11 +72,13 @@ namespace view
         {
             Console.Clear();
             int index;
+            // waits for user to enter number for boat.
             do
             {
                 this.setBlueText(message);
                 this.displayBoats(member.boatsToString());
                 this.setBlueText("\n>Enter nr: ");
+
                 if (int.TryParse(Console.ReadLine(), out index) && index >= 1
                     && index <= member.NrOfBoats)
                 {
@@ -93,6 +99,7 @@ namespace view
         public float getBoatLength() 
         {
             Console.Clear();
+            // waits for user to input valid boat length
             do 
             {
                 this.setBlueText(">Enter boats length in feet: ");
@@ -113,6 +120,7 @@ namespace view
             Console.Clear();
             int nrOfBoatTypes = 5;
             int index;
+            //waits for user to enter menu choice
             do
             { 
                 Console.WriteLine("\n - Boat types --------------------------------\n");
@@ -142,6 +150,7 @@ namespace view
             Console.Clear();
             this.setBlueText("To Look at a specific member enter the member id below");
             Console.WriteLine("\n═══════════════════ Members ════════════════════════\n");
+            // writes out compact info of members
             foreach(Member member in members)
             {
                 string formatedOutput = String.Format("{0,-12} {1,12} {2,12}",
@@ -158,6 +167,7 @@ namespace view
             Console.Clear();
             this.setBlueText("To Look at a specific member enter the member id at the bottom");
             Console.WriteLine("\n═══════════════════ Members ════════════════════════\n");
+            // writes out verbose info of members
             foreach(Member member in members)
             {
                 this.verboseMemberInfo(member);
@@ -175,6 +185,7 @@ namespace view
 
         public void GetKeyPress(string msg)
         {
+            // writes a message and waits for user to press key
             Console.ForegroundColor = ConsoleColor.White;
             Console.BackgroundColor = ConsoleColor.DarkBlue;
             Console.Write($"\n {msg}");

@@ -22,6 +22,7 @@ namespace model
 
         public void CreateEmptyFile()
         {
+            //checks if file to save members in exits, if not, creates a file. 
             if (!File.Exists(this._filePath))
             {
                 File.Create(this._filePath).Dispose();
@@ -30,17 +31,20 @@ namespace model
 
         public List<Member> readMemberFile()
         {
+            // Reads json and converts it to a List.
             string jsonData = System.IO.File.ReadAllText(this._filePath);
             return JsonConvert.DeserializeObject<List<Member>>(jsonData) ?? new List<Member>();
         }
 
         private void writeToMemberFile() {
+            //converts List to json and writes to file.
             string memberInfo = JsonConvert.SerializeObject(this._memberList);
             File.WriteAllText(this._filePath, memberInfo);	
         }
   
         public bool validateMemberId(string id)
         {
+            // check if member id exists.
             if (!this._memberList.Exists(member => member.MemberId == id))
             {
                 return false;
@@ -68,6 +72,7 @@ namespace model
 
         private string uniqueId(Member newMember)
         {
+            // generates new id if id already exists.
             do 
             {
                 newMember.generateId();
@@ -87,6 +92,7 @@ namespace model
 
         public void updateMember(Member updatedMember)
         {
+            // finds the member to be updated in the _memberList and updates it. 
             this._memberList 
                 .Where(member => member.MemberId == updatedMember.MemberId)
                 .ToList()
@@ -100,6 +106,7 @@ namespace model
 
         public void addToBoatList(Member currentMember, BoatTypes type, float length)
         {
+            // finds member and add a boat to that member.
              this._memberList 
                 .Where(member => member.MemberId == currentMember.MemberId)
                 .ToList()
@@ -112,6 +119,7 @@ namespace model
 
         public void updateBoatList(Member member, int boatId, float length)
         {
+            // updates a specific boats length
              member.Boats
                 .Where(boat => boat.Id == boatId)
                 .ToList()
@@ -124,6 +132,7 @@ namespace model
 
         public void updateBoatList(Member member, int boatId, BoatTypes type)
         {
+            //updates a specific boats type
              member.Boats
                 .Where(boat => boat.Id == boatId)
                 .ToList()

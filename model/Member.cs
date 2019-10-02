@@ -57,7 +57,10 @@ namespace model
 
         public void generateId() 
         {
+            // take the two first letters from username.
             string id = this._name.Substring(0, 2);
+
+            // create three random int and two random chars.
             Random rnd = new Random();
             for (int i = 0; i < 3; i++)
             {

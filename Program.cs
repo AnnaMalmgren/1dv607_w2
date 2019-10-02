@@ -15,6 +15,7 @@ namespace _1dv607_w2
                 MenusView view = new MenusView();
                 MemberView mView = new MemberView();
                 ConsoleController controller = new ConsoleController(view, mView);
+                
                 controller.startApp();
             }
             catch (Exception e) 

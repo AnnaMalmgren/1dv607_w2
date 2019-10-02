@@ -32,11 +32,11 @@ namespace controller
                 this.mainMenu();
             }
         }
-
+        
         public void mainMenu()
         {
             MainMenu choice = this._view.getMainMenuChoice();
-            
+            // Actions for all the choices in the main menu.
             switch (choice)
             {
                 case MainMenu.AddMember:
@@ -58,6 +58,8 @@ namespace controller
 
         private void collectMemberEvents()
         { 
+            //waits for user to enter members Id
+            //If user enters "0", display main menu.
             string memberId = this._memberView.getMemberId();
             string displayMainMenu = "0";
             if (memberId == displayMainMenu)
@@ -72,12 +74,14 @@ namespace controller
 
         public void Events(string memberId)
         { 
+            //Check if meberId exists.
             if (!this._registry.validateMemberId(memberId))
             {
                 this._view.setErrorMsg("Member id does not exist");
                 this._view.GetKeyPress("\n Press any key to continue"); 
                 this.mainMenu();
             }
+            // Display member menu and wait for user the enter a menu choice.
             else
             {
                 Member member = this._registry.getMember(memberId);
@@ -86,9 +90,10 @@ namespace controller
                 this.memberMenuEvents(member, choice);
             }      
         }
-        
+
         private void memberMenuEvents(Member member, MemberMenu choice)
-        {
+        { 
+            // actions for all the menu choice in the member menu.
             switch (choice)
             {
                 case MemberMenu.GoBack:
@@ -132,6 +137,7 @@ namespace controller
 
         private void createMember() 
         {
+            //Asks user for name and personalnumber and saves member.
            string name = this._memberView.getMemberName();
            string personalNr = this._memberView.getMemberPersonalNr();
            this._registry.saveMember(name, personalNr);	
@@ -140,6 +146,7 @@ namespace controller
         private void changeMember(Member member)
         {
             ChangeMember menuChoice = this._view.getChangeMemberChoice();
+            // actions for the menu choices int change member.
             switch (menuChoice)
             {
                 case ChangeMember.ChangeName:
@@ -156,6 +163,7 @@ namespace controller
 
         private int getBoatId(Member member, string msg)
         {
+            //check if member has any boats and asks user to chose a boat id.
             if (member.NrOfBoats != this.memberHasNoBoats)
             {
                 int boatId = this._memberView.getChosenBoat(member, msg);
@@ -169,6 +177,7 @@ namespace controller
 
         private void registerBoat(string id)
         {
+            // ask user for boat type and length and add boat to member.
             Member member = this._registry.getMember(id);
             BoatTypes type = this._memberView.getBoatType();
             float length = this._memberView.getBoatLength();
@@ -180,7 +189,7 @@ namespace controller
         {
             string deleteMsg = "Enter the nr of the boat you want to delete below\n";
             int boatId = this.getBoatId(member, deleteMsg);
-
+            // check if member has boats.   
             if (boatId != this.memberHasNoBoats)
             {  
                 this.handleDeleteBoat(member, boatId);
@@ -193,6 +202,7 @@ namespace controller
 
         private void handleDeleteBoat(Member member, int boatId)
         {
+            // asks user to confirm delete.
             if (this.confirmDelete($"boat {boatId}")) 
             {    
                 this._registry.deleteBoat(member, boatId);
@@ -209,6 +219,7 @@ namespace controller
             string changeMsg = "Enter the nr of the boat you want to change below\n";
             int changeId = this.getBoatId(member, changeMsg);
 
+            //Check if member has boats.
             if (changeId != this.memberHasNoBoats)
             {
                 this.changeBoat(member, changeId);
@@ -224,6 +235,7 @@ namespace controller
         {
             
             ChangeBoat menuChoice = this._view.getChangeBoatChoice();
+            // action for the menu choices in change boat.
             switch (menuChoice)
             {
                 case ChangeBoat.ChangeType:
@@ -240,6 +252,7 @@ namespace controller
         
         private bool confirmDelete(string deleteMsg)
         {
+            // ask user to confirm delete by entering y;
             string confirm = this._view.getDeleteConfirm(deleteMsg);
             return confirm == "y" ? true : false; 
         }
