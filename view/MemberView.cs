@@ -6,7 +6,6 @@ namespace view
 {
     public class MemberView : MessageView
     {
-
         public string getMemberName() 
         {
             Console.Clear();
@@ -69,22 +68,21 @@ namespace view
             Console.WriteLine("\n═══════════════════════════════════════════════\n");
         }
 
-        public int getChosenBoat(Member member)
+        public Boat getChosenBoat(Member member)
         {
             Console.Clear();
-            int index;
-            // waits for user to enter number for boat.
+            int boatId;
             do
             {
                 this.setBlueText("Enter the nr of the boat you want to select below\n");
                 this.displayBoats(member.Boats);
                 this.setBlueText("\n>Enter nr: ");
 
-                if (int.TryParse(Console.ReadLine(), out index) && index >= 1
-                    && index <= member.NrOfBoats)
+                if (int.TryParse(Console.ReadLine(), out boatId) && boatId >= 1
+                    && boatId <= member.NrOfBoats)
                 {
                     Console.Clear();
-                    return index;
+                    return member.getBoat(boatId);
                 }
                 
                 this.setErrorMsg($"Error enter a number between 1 and {member.NrOfBoats}");
@@ -123,7 +121,7 @@ namespace view
         public BoatTypes getBoatType() 
         {
             Console.Clear();
-            int nrOfBoatTypes = 5;
+            int nrOfBoatTypes = Enum.GetNames(typeof(BoatTypes)).Length;
             int index;
             //waits for user to enter menu choice
             do
@@ -137,7 +135,7 @@ namespace view
                 Console.WriteLine("\n ══════════════════════════════════════════\n");
                 this.setBlueText("Enter the nr of the boats type \n>Enter menu selection nr [1-5]: ");
                 
-                if (int.TryParse(Console.ReadLine(), out index) && index >= 1
+                if (int.TryParse(Console.ReadLine(), out index) && index >= (int)BoatTypes.Sailboat
                     && index <= nrOfBoatTypes)
                 {
                     Console.Clear();

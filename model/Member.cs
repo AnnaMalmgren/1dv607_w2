@@ -14,6 +14,8 @@ namespace model
 
         public int NrOfBoats => Boats.Count;
 
+        public bool HasNoBoats => Boats.Count == 0;
+
         public string Name
         {
             get => this._name;

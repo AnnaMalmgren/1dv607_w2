@@ -75,10 +75,10 @@ namespace model
             this._memberDAL.writeToMemberFile(this._memberList);
         }
 
-        public void updateBoatList(Member member, int boatId, float lengthInFeet)
+        public void updateBoatList(Member member, Boat selectedBoat, float lengthInFeet)
         {
              member.Boats
-                .Where(boat => boat.Id == boatId)
+                .Where(boat => boat.Id == selectedBoat.Id)
                 .ToList()
                 .ForEach(boat => {
                     boat.LengthInFeet = lengthInFeet;
@@ -87,10 +87,10 @@ namespace model
                 this._memberDAL.writeToMemberFile(this._memberList);
         }
 
-        public void updateBoatList(Member member, int boatId, BoatTypes type)
+        public void updateBoatList(Member member, Boat selectedBoat, BoatTypes type)
         {
              member.Boats
-                .Where(boat => boat.Id == boatId)
+                .Where(boat => boat.Id == selectedBoat.Id)
                 .ToList()
                 .ForEach(boat => {
                     boat.Type = type;
@@ -98,9 +98,8 @@ namespace model
                 
                 this._memberDAL.writeToMemberFile(this._memberList);
         }
-        public void deleteBoat(Member member, int boatId)
+        public void deleteBoat(Member member, Boat boat)
         {
-            Boat boat = member.getBoat(boatId);
             member.deleteBoat(boat);
             member.updateBoatsId();
             this._memberDAL.writeToMemberFile(this._memberList);

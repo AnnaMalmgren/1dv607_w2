@@ -11,7 +11,7 @@ namespace view
             Console.ResetColor();
         }
 
-        public void GetKeyPress(string msg)
+        public void GetKeyPress(string msg = "\n Press any key to continue")
         {
             Console.ForegroundColor = ConsoleColor.White;
             Console.BackgroundColor = ConsoleColor.DarkBlue;
@@ -26,6 +26,41 @@ namespace view
             Console.ForegroundColor = ConsoleColor.Blue;
             Console.Write(msg); 
             Console.ResetColor();
+        }
+
+        public void setBoatAddedMsg() 
+        {
+            this.GetKeyPress("Boat registered, press any key to continue");
+        }
+
+        public void setBoatChangedMsg() 
+        {
+            this.GetKeyPress("Boat has been changed, press any key to continue");
+        }
+
+        public void setBoatDeletedMsg() 
+        {
+            this.GetKeyPress("Boat has been deleted, press any key to continue");
+        }
+
+        public void setNoBoatsMsg() 
+        {
+            this.GetKeyPress("Member has no boats, press any key to continue");
+        }
+
+         public void setMemberDeletedMsg() 
+        {
+            this.GetKeyPress("Member deleted, press any key to continue");
+        }
+
+         public void setMemberChangedMsg() 
+        {
+            this.GetKeyPress("Member information changed, press any key to continue");
+        }
+
+         public void setMemberRegisteredMsg() 
+        {
+            this.GetKeyPress("Member registered, press any key to continue");
         }
     }
 }
