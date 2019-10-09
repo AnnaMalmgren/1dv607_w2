@@ -22,7 +22,7 @@ namespace model
             {
                 if (String.IsNullOrEmpty(value))
                 {
-                    throw new ArgumentNullException("Member must have a name");
+                    throw new ArgumentNullException();
                 }
 
                 this._name = value;
@@ -39,7 +39,7 @@ namespace model
                 double id;
                 if (!double.TryParse(value, out id) || value.Length != this.personalNrLength)
                 {
-                    throw new ArgumentException("Personal number must be format YYMMDDNNNN");
+                    throw new ArgumentException();
                 }
 
                 this._personalNumber = value;
@@ -94,18 +94,6 @@ namespace model
         
         public void deleteBoat(Boat boatToRemove) => this.Boats.Remove(boatToRemove);
 
-
-        public string boatsToString()
-        {
-            string boatString = "";
-            foreach (Boat boat in this.Boats)
-            {
-                boatString += "\n-----------------------------------------------\n";
-                boatString += $"Boat nr {boat.Id}\nType: {boat.Type}\nLength: {boat.Length}";
-            }
-
-            return boatString;
-        }
 
     }
 }

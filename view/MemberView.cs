@@ -4,8 +4,9 @@ using System.Collections.Generic;
 
 namespace view
 {
-    public class MemberView : IMessageView
+    public class MemberView : MessageView
     {
+
         public string getMemberName() 
         {
             Console.Clear();
@@ -64,19 +65,19 @@ namespace view
             Console.WriteLine($"PersonalNumber: {member.PersonalNumber}");
             Console.WriteLine($"Member id: {member.MemberId}");
             Console.WriteLine($"Nr of boats: {member.NrOfBoats}");
-            this.displayBoats(member.boatsToString());
+            this.displayBoats(member.Boats);
             Console.WriteLine("\n═══════════════════════════════════════════════\n");
         }
 
-        public int getChosenBoat(Member member, string message)
+        public int getChosenBoat(Member member)
         {
             Console.Clear();
             int index;
             // waits for user to enter number for boat.
             do
             {
-                this.setBlueText(message);
-                this.displayBoats(member.boatsToString());
+                this.setBlueText("Enter the nr of the boat you want to select below\n");
+                this.displayBoats(member.Boats);
                 this.setBlueText("\n>Enter nr: ");
 
                 if (int.TryParse(Console.ReadLine(), out index) && index >= 1
@@ -91,9 +92,13 @@ namespace view
             } while(true);
         }
 
-        public void displayBoats(string boatsInfo)
+        public void displayBoats(List<Boat> boats)
         {
-            Console.WriteLine(boatsInfo);
+            foreach (Boat boat in boats)
+            {
+                Console.WriteLine("\n-----------------------------------------------\n");
+                Console.WriteLine($"Boat nr {boat.Id}\nType: {boat.Type}\nLength: {boat.LengthInFeet}");
+            }
         }
 
         public float getBoatLength() 
@@ -176,29 +181,5 @@ namespace view
             this.setBlueText("To go back to main menu enter 0\n");
         }
 
-        public void setErrorMsg(string msg)
-        {
-            Console.ForegroundColor = ConsoleColor.Red;
-            Console.WriteLine($"\n{msg}\n");
-            Console.ResetColor();
-        }
-
-        public void GetKeyPress(string msg)
-        {
-            // writes a message and waits for user to press key
-            Console.ForegroundColor = ConsoleColor.White;
-            Console.BackgroundColor = ConsoleColor.DarkBlue;
-            Console.Write($"\n {msg}");
-            Console.ResetColor();
-            Console.ReadKey();
-            Console.Clear();
-        }
-
-        public void setBlueText(string msg)
-        {
-            Console.ForegroundColor = ConsoleColor.Blue;
-            Console.Write(msg); 
-            Console.ResetColor();
-        }
     }
 }

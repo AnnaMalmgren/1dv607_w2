@@ -14,18 +14,18 @@ namespace model
     }
     public class Boat 
     {
-        private float _length;
+        private float _lengthInFeet;
 
-        public float Length 
+        public float LengthInFeet 
         {
-            get => this._length;
+            get => this._lengthInFeet;
             set
             {
                 if (value <= 0)
                 {
-                    throw new ArgumentOutOfRangeException("Length must have a value over 0");
+                    throw new ArgumentOutOfRangeException();
                 }
-                _length = value;
+                _lengthInFeet = value;
             }
         }
 
@@ -33,16 +33,11 @@ namespace model
 
         public BoatTypes Type { get; set; }
 
-        public Boat (BoatTypes type, float length, int id) 
+        public Boat (BoatTypes type, float lengthInFeet, int id) 
         {
             this.Type = type;
-            this.Length = length;
+            this.LengthInFeet = lengthInFeet;
             this.Id = id;
-        }
-
-        public string toString()
-        {
-           return$"Boat nr {this.Id}\nType: {this.Type}\nLength: {this.Length}";
         }
         
     }

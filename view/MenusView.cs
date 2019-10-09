@@ -2,7 +2,7 @@ using System;
 
 namespace view
 {
-    public class MenusView : IMessageView
+    public class MenusView : MessageView
     {
         public MainMenu getMainMenuChoice() 
         {
@@ -88,16 +88,19 @@ namespace view
             } while (true);
         }
 
-        public string getDeleteConfirm(string msg)
+        public bool getDeleteConfirm()
         {
             // user should press y for confirm delete and n for no.
             do
             {
-                this.setBlueText($"\nAre you sure you want to delete {msg} (y/n): ");
+                this.setBlueText($"\nAre you sure you want to delete (y/n): ");
                 string confirm = Console.ReadLine();
-                if (confirm == "y" || confirm == "n")
+                if (confirm == "y")
                 {
-                    return confirm;
+                    return true;
+                }
+                if ( confirm == "n") {
+                    return false;
                 }
              
                 this.setErrorMsg("Error you have to enter y for yes or n for no");
@@ -128,29 +131,6 @@ namespace view
             } while (true);
         }
 
-        public void setErrorMsg(string msg)
-        {
-            Console.ForegroundColor = ConsoleColor.Red;
-            Console.WriteLine($"\n{msg}\n");
-            Console.ResetColor();
-        }
-
-        public void GetKeyPress(string msg)
-        {
-            Console.ForegroundColor = ConsoleColor.White;
-            Console.BackgroundColor = ConsoleColor.DarkBlue;
-            Console.Write($"\n {msg}");
-            Console.ResetColor();
-            Console.ReadKey();
-            Console.Clear();
-        }
-
-        public void setBlueText(string msg)
-        {
-            Console.ForegroundColor = ConsoleColor.Blue;
-            Console.Write(msg); 
-            Console.ResetColor();
-        }
      
     }
 }
