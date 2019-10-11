@@ -24,15 +24,18 @@ namespace model
         }
 
         public Member getMember(string id) 
-        {     
+        { 
+            if (!this.doesMemberIdExists(id))
+            {
+                throw new MemberNotFoundException();
+            }
+            
             return this._memberList.Find(member => member.MemberId == id);
         }
 
-        public void deleteMember(string id) 
+        public void deleteMember(Member member) 
         {
-           Member memberToDelete = this.getMember(id);
-
-           this._memberList.Remove(memberToDelete);
+           this._memberList.Remove(member);
            this._memberDAL.writeToMemberFile(this._memberList);	
         }
 
@@ -47,11 +50,10 @@ namespace model
             } while (true);
         } 
 
-        public void saveMember(string name, string personalNr)
+        public void saveMember(Member member)
         {
-            Member newMember = new Member(name, personalNr);
-            this.uniqueId(newMember);
-            this._memberList.Add(newMember);
+            this.uniqueId(member);
+            this._memberList.Add(member);
             this._memberDAL.writeToMemberFile(this._memberList);	
         }
 

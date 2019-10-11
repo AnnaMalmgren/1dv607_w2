@@ -18,129 +18,140 @@ namespace controller
             this._registry = new MemberRegistry();
         }
 
-        public void startApp()
+        public bool mainMenu()
         {
-            try
+            MainMenu mainEvent = this._view.getMainMenuChoice();
+
+            if (mainEvent == MainMenu.Exit) 
             {
-                this.mainMenu();
+                return false;
             }
-            catch(Exception e)
+           
+            if (mainEvent == MainMenu.AddMember)
             {
-                this._view.setErrorMsg(e.Message);
-                this._view.GetKeyPress(); 
-                this.mainMenu();
+                this.createMember();
             }
-        }
-        
-        public void mainMenu()
-        {
-            MainMenu choice = this._view.getMainMenuChoice();
-            switch (choice)
+            
+            if (mainEvent == MainMenu.CompactList)
             {
-                case MainMenu.AddMember:
-                    this.createMember();
-                    break;
-
-                case MainMenu.CompactList:
-                    this._memberView.showCompactList(this._registry.MemberList);
-                    this.collectMemberEvents(); 
-                    break;
-
-                case MainMenu.VerboseList:
-                    this._memberView.showVerboseList(this._registry.MemberList);
-                    this.collectMemberEvents();
-                    break;
-            }
-        }
-
-        private void collectMemberEvents()
-        { 
-            string memberId = this._memberView.getMemberId();
-
-            if (this._registry.doesMemberIdExists(memberId))
-            {
-                Member member = this._registry.getMember(memberId);
-                this.setMemberMenuChoice(member);
+                this._memberView.showCompactList(this._registry.MemberList);
+                this.collectMemberEvents(); 
             }
 
-             else
+            if  (mainEvent == MainMenu.VerboseList)
             {
-                this._view.setErrorMsg("Member id does not exist");
-                this._view.GetKeyPress(); 
-                this.mainMenu();
-            }      
-        }
-
-        public void setMemberMenuChoice(Member member)
-        { 
-            this._memberView.displayMember(member);
-            MemberMenu choice = this._view.getMemberMenuChoice();
-            this.memberMenuEvents(member, choice); 
-        }
-
-        private void memberMenuEvents(Member member, MemberMenu choice)
-        { 
-            switch (choice)
-            {
-                case MemberMenu.GoBack:
-                    this.mainMenu();
-                    break;
-
-                case MemberMenu.ChangeMember:
-                    this.changeMember(member);
-                    this._view.setMemberChangedMsg();
-                    break;
-
-                case MemberMenu.DeleteMember:
-                    if (this._view.getDeleteConfirm())
-                    {
-                        this._registry.deleteMember(member.MemberId);
-                        this._view.setMemberDeletedMsg();
-                    }
-                    break;
-
-                 case MemberMenu.RegisterBoat:
-                    this.registerBoat(member.MemberId);
-                    break;
-
-                case MemberMenu.DeleteBoat:
-                    this.doDeleteBoat(member);
-                    break;
-
-                case MemberMenu.ChangeBoat:
-                    this.doChangeBoat(member);
-                    break;
+                this._memberView.showVerboseList(this._registry.MemberList);
+                this.collectMemberEvents();
             }
+
+            return true;
+                
         }
 
         private void createMember() 
         {
-           string name = this._memberView.getMemberName();
-           string personalNr = this._memberView.getMemberPersonalNr();
-           this._registry.saveMember(name, personalNr);
-           this._view.setMemberRegisteredMsg();
+            try 
+            {
+                Member memberCredentials = this._memberView.getMemberCredentials();
+                this._registry.saveMember(memberCredentials);
+                this._view.setMemberRegisteredMsg();
+            }
+            catch(ArgumentNullException)
+            {
+                this.handleInvalidCredentials();
+            }
+            catch(PinFormatException)
+            {
+                this.handleInvalidCredentials();
+            }
+        }
+
+        private void handleInvalidCredentials() 
+        {
+            this._view.setErrorMsg("Wrong info in credentials");
+            this._view.GetKeyPress();
+            this.createMember();
+        }
+
+        private void collectMemberEvents()
+        {
+            try 
+            {
+                string memberId = this._memberView.getMemberId();
+                Member member = this._registry.getMember(memberId);
+                while (this.memberMenuEvents(member, this._view.getMemberMenuChoice()));
+            } 
+            catch (MemberNotFoundException)
+            {
+                this._memberView.setErrorMsg("Member not found");
+                this._memberView.GetKeyPress();
+            }  
+        }
+
+        private bool memberMenuEvents(Member member, MemberMenu choice)
+        { 
+            this._memberView.displayMember(member);
+
+            if (choice == MemberMenu.GoBack) 
+            {
+                 return false;
+            }
+
+            if (choice == MemberMenu.ChangeMember)
+            {
+                this.changeMember(member);
+            }
+
+            if (choice == MemberMenu.DeleteMember)
+            {
+                this.deleteMember(member);
+            }
+
+            if (choice == MemberMenu.RegisterBoat)
+            {
+                this.registerBoat(member);
+            }
+
+            if (choice == MemberMenu.DeleteBoat)
+            {
+                this.doDeleteBoat(member);
+            }
+
+            if (choice == MemberMenu.ChangeBoat)
+            {
+                this.doChangeBoat(member);
+            }
+
+            return true;
         }
         
+        private void deleteMember(Member member)
+        {
+            if (this._view.getDeleteConfirm())
+            {
+                this._registry.deleteMember(member);
+                this._view.setMemberDeletedMsg();
+            }
+        }
         private void changeMember(Member member)
         {
             ChangeMember menuChoice = this._view.getChangeMemberChoice();
-            switch (menuChoice)
-            {
-                case ChangeMember.ChangeName:
-                member.Name = this._memberView.getMemberName();
-                this._registry.updateMember(member);
-                break;
 
-                case ChangeMember.ChangePersonalNr:
-                member.PersonalNumber = this._memberView.getMemberPersonalNr();
+            if (menuChoice == ChangeMember.ChangeName) 
+            {
+                member.Name = this._memberView.getMemberName();
+            }
+            
+            if (menuChoice == ChangeMember.ChangePersonalNr)
+            {
+                 member.PersonalNumber = this._memberView.getMemberPersonalNr();
+            }
                 this._registry.updateMember(member);
-                break;
-            }   
+                this._view.setMemberChangedMsg(); 
         }
 
-        private void registerBoat(string id)
+        private void registerBoat(Member member)
         {
-            Member member = this._registry.getMember(id);
             BoatTypes type = this._memberView.getBoatType();
             float length = this._memberView.getBoatLength();
             this._registry.addToBoatList(member, type, length);
@@ -150,9 +161,9 @@ namespace controller
 
         private void doDeleteBoat(Member member)
         {
-            Boat selectedBoat = this._memberView.getChosenBoat(member);
-            if (!member.HasNoBoats)
-            {  
+            if (member.Boats.Count > 0)
+            {
+                Boat selectedBoat = this._memberView.getChosenBoat(member);
                 this.handleDeleteBoat(member, selectedBoat);
             }
             else
@@ -173,14 +184,13 @@ namespace controller
 
         private void doChangeBoat(Member member)
         {
-            Boat selectedBoat = this._memberView.getChosenBoat(member);
-
-            if (!member.HasNoBoats)
+            if (member.Boats.Count > 0)
             {
+                Boat selectedBoat = this._memberView.getChosenBoat(member);
                 this.changeBoat(member, selectedBoat);
                 this._view.setBoatChangedMsg();
             }
-            else
+            else 
             {
                 this._view.setNoBoatsMsg();
             }
@@ -198,8 +208,8 @@ namespace controller
                 break;
 
                 case ChangeBoat.ChangeLength:
-                float length = this._memberView.getBoatLength();
-                this._registry.updateBoatList(member, boat, length);
+                float lengthInFeet = this._memberView.getBoatLength();
+                this._registry.updateBoatList(member, boat, lengthInFeet);
                 break;
             }      
         }

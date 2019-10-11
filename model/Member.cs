@@ -8,7 +8,7 @@ namespace model
         private string _name;
         private string _personalNumber;
 
-        private int personalNrLength = 10;
+        public int PersonalNrLength = 10;
 
         public List<Boat> Boats { get; private set; }
 
@@ -38,10 +38,10 @@ namespace model
 
             set 
             {
-                double id;
-                if (!double.TryParse(value, out id) || value.Length != this.personalNrLength)
+                double pin;
+                if (!double.TryParse(value, out pin) || value.Length != this.PersonalNrLength)
                 {
-                    throw new ArgumentException();
+                    throw new PinFormatException();
                 }
 
                 this._personalNumber = value;
@@ -56,6 +56,7 @@ namespace model
             this.PersonalNumber = personalNumber;
             this.Boats = new List<Boat>();
         }
+
 
         public void generateId() 
         {
@@ -75,7 +76,6 @@ namespace model
 
             this.MemberId = id;
         }
-
 
         public void addBoat(BoatTypes type, float length) {
             int id = this.NrOfBoats + 1;
