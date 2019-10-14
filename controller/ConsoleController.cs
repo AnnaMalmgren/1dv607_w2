@@ -23,7 +23,7 @@ namespace controller
 
             if (mainEvent == MainMenu.Exit) 
             {
-                this._registry.saveMemberRegistry();
+                this._registry.saveUpdatedMemberRegistry();
                 return false;
             }
            
@@ -34,13 +34,13 @@ namespace controller
             
             if (mainEvent == MainMenu.CompactList)
             {
-                this._memberView.showCompactList(this._registry.MemberList);
+                this._memberView.showCompactList(this._registry.Members);
                 this.collectMemberEvents(); 
             }
 
             if  (mainEvent == MainMenu.VerboseList)
             {
-                this._memberView.showVerboseList(this._registry.MemberList);
+                this._memberView.showVerboseList(this._registry.Members);
                 this.collectMemberEvents();
             }
             return true;    

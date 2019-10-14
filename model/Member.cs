@@ -6,10 +6,11 @@ namespace model
 {
     public class Member {
         private string _name;
+
         private string _personalNumber;
 
         private int _personalNrLength = 10;
-
+        
         public List<Boat> Boats { get; private set; }
 
         public int NrOfBoats => Boats.Count;
@@ -44,13 +45,18 @@ namespace model
             }
         }
 
-        public int MemberId { get; set; }
+        public int MemberId { get; private set; }
 
         public Member(string name, string personalNumber) 
         {
             this.Name = name; 
             this.PersonalNumber = personalNumber;
             this.Boats = new List<Boat>();
+        }
+
+        public void setMemberId(int id)
+        {
+            this.MemberId = id;
         }
 
         public void addBoat(BoatTypes type, float length) {

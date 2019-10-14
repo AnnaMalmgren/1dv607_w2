@@ -14,9 +14,9 @@ namespace _1dv607_w2
             {
                 MenusView view = new MenusView();
                 MemberView mView = new MemberView();
-                ConsoleController c = new ConsoleController(view, mView);
+                ConsoleController app = new ConsoleController(view, mView);
                 
-                while(c.mainMenu());
+                while(app.mainMenu());
             }
             catch (Exception e) 
             {

@@ -6,7 +6,12 @@ namespace view
 {
     public class MemberView : MessageView
     {
-        public string getMemberName() 
+        public Member getMemberCredentials() 
+        {
+            return new Member(this.getMemberName(), this.getMemberPersonalNr());
+        }
+
+         public string getMemberName() 
         {
             Console.Clear(); 
             do
@@ -27,10 +32,6 @@ namespace view
             return Console.ReadLine();
         }
 
-        public Member getMemberCredentials() 
-        {
-            return new Member(this.getMemberName(), this.getMemberPersonalNr());
-        }
 
         public int getMemberId()
         {
@@ -156,7 +157,7 @@ namespace view
             }
         }
 
-          private void displayMemberListHeader()
+        private void displayMemberListHeader()
         {
             Console.Clear();
             this.setBlueText("To Look at a specific member enter the member id below\n");

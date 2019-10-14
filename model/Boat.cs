@@ -3,7 +3,6 @@ using System;
 
 namespace model
 {
-
     public enum BoatTypes
     {
         Sailboat = 1, 

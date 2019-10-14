@@ -37,8 +37,6 @@ namespace view
         public MemberMenu getMemberMenuChoice(bool memberHasBoats)
         {
             this.displayMemberMenu(memberHasBoats);
-            Console.WriteLine("\n ═══════════════════════════════════════════\n");
-            this.setBlueText(">Enter menu selection: ");
             int memberMenuLength = this.getNrOfMemberMenuChoices(memberHasBoats);
             return (MemberMenu)this.getMenuChoiceNr(memberMenuLength);
         }
@@ -50,11 +48,15 @@ namespace view
             Console.WriteLine(" 1. Change member information");
             Console.WriteLine(" 2. Delete member");
             Console.WriteLine(" 3. Register boat");
+
             if (memberHasBoats)
             {
                 Console.WriteLine(" 4. Change boat information");
                 Console.WriteLine(" 5. Delete boat");
             }
+            
+            Console.WriteLine("\n ═══════════════════════════════════════════\n");
+            this.setBlueText(">Enter menu selection: ");
         }
 
         private int getNrOfMemberMenuChoices(bool memberHasBoats)
