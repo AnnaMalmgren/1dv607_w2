@@ -5,20 +5,34 @@ namespace view
         Exit,
 
         AddMember,
+
         CompactList,
 
         VerboseList
     }
 
-    public enum MemberMenu
+    public enum MemberMenuNoBoats
     {
         GoBack,
         ChangeMember,
 
         DeleteMember,
 
+        RegisterBoat
+
+    }
+
+    public enum MemberMenu
+    {
+        GoBack,
+
+        ChangeMember,
+
+        DeleteMember,
+
         RegisterBoat,
 
+      
         ChangeBoat,
 
         DeleteBoat
@@ -35,5 +49,4 @@ namespace view
         ChangeType = 1,
         ChangeLength
     }
-
 }

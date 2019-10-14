@@ -11,7 +11,7 @@ namespace view
             do
             {  
                 Console.WriteLine("\n═══════════════════ Main Menu ══════════════════════\n");;
-                Console.WriteLine(" 0. Exit");
+                Console.WriteLine(" 0. Save and exit");
                 Console.WriteLine(" 1. Add Member");
                 Console.WriteLine(" 2. List members compact");
                 Console.WriteLine(" 3. List members verbose");
@@ -24,38 +24,53 @@ namespace view
                     Console.Clear();
                     return (MainMenu)index;
                 }
-
-                this.setErrorMsg($"Select a number from the menu list");
-                this.GetKeyPress();
-
+                this.handleWrongMenuInput();
             } while (true);
         }
 
-        public MemberMenu getMemberMenuChoice()
+        private void handleWrongMenuInput()
         {
-            int memberMenuLength = Enum.GetNames(typeof(MemberMenu)).Length;
-            do
-            {  
-                Console.WriteLine("\n - Menu -----------------------------------\n");
-                Console.WriteLine(" 0. Main Menu");
-                Console.WriteLine(" 1. Change member information");
-                Console.WriteLine(" 2. Delete member");
-                Console.WriteLine(" 3. Register boat");
+            this.setErrorMsg($"Select a number from the menu list");
+            this.GetKeyPress();
+        }
+
+        private void displayMemberMenu(bool hasBoats)
+        {
+            Console.WriteLine("\n - Menu -----------------------------------\n");
+            Console.WriteLine(" 0. Main Menu");
+            Console.WriteLine(" 1. Change member information");
+            Console.WriteLine(" 2. Delete member");
+            Console.WriteLine(" 3. Register boat");
+            if (hasBoats)
+            {
                 Console.WriteLine(" 4. Change boat information");
                 Console.WriteLine(" 5. Delete boat");
+            }
+        }
+
+        private int getNrOfMemberMenuChoices(bool hasBoats)
+        {
+            int nrOfMemberMenuChoices = Enum.GetNames(typeof(MemberMenu)).Length;
+            int nrOfHasNoBoatMenuChoices = Enum.GetNames(typeof(MemberMenuNoBoats)).Length;
+            return hasBoats ? nrOfMemberMenuChoices  : nrOfHasNoBoatMenuChoices;
+        }
+
+        public MemberMenu getMemberMenuChoice(bool hasBoats)
+        {
+            int memberMenuLength = this.getNrOfMemberMenuChoices(hasBoats);
+            do
+            {  
+                this.displayMemberMenu(hasBoats);
                 Console.WriteLine("\n ═══════════════════════════════════════════\n");
-                this.setBlueText(">Enter menu selection [0-5]: ");
+                this.setBlueText(">Enter menu selection: ");
 
                 if (int.TryParse(Console.ReadLine(), out int index) && index >= 0 
                     && index <= memberMenuLength)
                 {
-                    Console.Clear();
-
-                   return (MemberMenu)index;
+                    return (MemberMenu)index;
                 }
 
-                this.setErrorMsg($"Select a number from the menu list");
-                this.GetKeyPress();
+                this.handleWrongMenuInput();
 
             } while (true);
         }
@@ -73,18 +88,15 @@ namespace view
                 if (int.TryParse(Console.ReadLine(), out int index) && index >= 1 
                     && index <= changeMenuLength)
                 {
-                    Console.Clear();
                     return (ChangeMember)index;
                 }
 
-                this.setErrorMsg($"Select a number from the menu list");
-                this.GetKeyPress();
+               this.handleWrongMenuInput();
             } while (true);
         }
 
         public bool getDeleteConfirm()
         {
-            // user should press y for confirm delete and n for no.
             do
             {
                 this.setBlueText($"\nAre you sure you want to delete (y/n): ");
@@ -104,7 +116,6 @@ namespace view
 
         public ChangeBoat getChangeBoatChoice() 
         {
-            // waits for user to enter change boat choice
             int changeBoatLength = Enum.GetNames(typeof(ChangeBoat)).Length;
             do
             {     
@@ -116,14 +127,10 @@ namespace view
                 if (int.TryParse(Console.ReadLine(), out int index) && index >= 1 
                     && index <= changeBoatLength)
                 {
-                    Console.Clear();
                     return (ChangeBoat)index;
                 }
-                this.setErrorMsg($"Select a number from the menu list");
-                this.GetKeyPress();
+                this.handleWrongMenuInput();
             } while (true);
         }
-
-     
     }
 }

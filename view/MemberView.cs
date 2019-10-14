@@ -8,10 +8,19 @@ namespace view
     {
         public string getMemberName() 
         {
-            Console.Clear();
-            this.setBlueText(">Enter members name: ");
-            return Console.ReadLine();
-        
+            Console.Clear(); 
+            do
+            {
+                this.setBlueText(">Enter members name: ");
+                string name = Console.ReadLine();
+                if(!String.IsNullOrEmpty(name))
+                {
+                    return name;
+                }
+                this.setErrorMsg("Member name must be entered");
+                this.GetKeyPress();
+
+            } while (true);
         }
 
         public string getMemberPersonalNr()
@@ -25,12 +34,20 @@ namespace view
             return new Member(this.getMemberName(), this.getMemberPersonalNr());
         }
 
-        public string getMemberId()
+        public int getMemberId()
         {
-            this.setBlueText(">Enter members member id: ");
-            return Console.ReadLine();
+            do
+            {
+                this.setBlueText(">Enter members member id: ");
+                if (int.TryParse(Console.ReadLine(), out int userId))
+                {
+                    return userId;
+                }
+                this.setErrorMsg("Member id is wrong, enter member id number");
+                this.GetKeyPress();
+            } while(true); 
         }
-
+        
         public void displayMember(Member member)
         {
             Console.Clear();
@@ -60,7 +77,6 @@ namespace view
                 if (int.TryParse(Console.ReadLine(), out int boatId) && boatId >= 1
                     && boatId <= member.NrOfBoats)
                 {
-                    Console.Clear();
                     return member.getBoat(boatId);
                 }
                 
@@ -69,7 +85,7 @@ namespace view
             } while(true);
         }
 
-        public void displayBoats(List<Boat> boats)
+        public void displayBoats(IReadOnlyList<Boat> boats)
         {
             foreach (Boat boat in boats)
             {
@@ -81,17 +97,15 @@ namespace view
         public float getBoatLength() 
         {
             Console.Clear();
-            // waits for user to input valid boat length
             do 
             {
                 this.setBlueText(">Enter boats length in feet: ");
                 string userInput = Console.ReadLine();
-                float length;
-                if (float.TryParse(userInput, out length))
+                if (float.TryParse(userInput, out float length) && length > 0)
                 {
                     return length;
                 }
-                this.setErrorMsg("Error boat length must be a numeric value");
+                this.setErrorMsg("Error boat length must be a positive numeric value");
                 this.GetKeyPress();
             } while(true);
         }
@@ -100,16 +114,14 @@ namespace view
         {
             Console.Clear();
             int nrOfBoatTypes = Enum.GetNames(typeof(BoatTypes)).Length;
-            int index;
             //waits for user to enter menu choice
             do
             {
-                this.printBoatTypesList(); 
+                this.displayBoatTypesMenu(); 
                
-                if (int.TryParse(Console.ReadLine(), out index) && index >= 1
+                if (int.TryParse(Console.ReadLine(), out int index) && index >= 1
                     && index <= nrOfBoatTypes)
                 {
-                    Console.Clear();
                     return (BoatTypes)index;
                 }
 
@@ -118,31 +130,44 @@ namespace view
             } while (true);
         }
 
-        private void printBoatTypesList() 
+        private void displayBoatTypesMenu() 
         {
-            int currentNr  = 1;
+           
             Console.WriteLine("\n - Boat types --------------------------------\n");
-            foreach (string boatType in Enum.GetNames(typeof(BoatTypes)))
+            this.displayBoatTypes();
+            Console.WriteLine("\n ══════════════════════════════════════════\n");
+            this.setBlueText("Enter menu selection nr: ");
+        }
+
+        private void displayBoatTypes()
+        {
+             int currentNr  = 1;
+             foreach (string boatType in Enum.GetNames(typeof(BoatTypes)))
             {
                 Console.WriteLine($"{currentNr}. {boatType}");
                 currentNr++;
             }
-            Console.WriteLine("\n ══════════════════════════════════════════\n");
-            this.setBlueText("Enter menu selection nr: ");
+
         }
-        
+
         public void showCompactList(IReadOnlyList<Member> members)
         {
-            Console.Clear();
-            this.setBlueText("To Look at a specific member enter the member id below");
-            Console.WriteLine("\n═══════════════════ Members ════════════════════════\n");
+            this.displayMemberListHeader();
+
             foreach(Member member in members)
             {
                 this.printCompactMemberInfo(member);
             }
-
-            this.setBlueText("To go back to main menu enter 0\n");
         }
+
+          private void displayMemberListHeader()
+        {
+            Console.Clear();
+            this.setBlueText("To Look at a specific member enter the member id below");
+            this.setBlueText("To go back to main menu enter 0\n");
+            Console.WriteLine("\n═══════════════════ Members ════════════════════════\n");
+        }
+        
 
         private void printCompactMemberInfo(Member member) {
             string formatedOutput = String.Format("{0,-12} {1,12} {2,12}",
@@ -153,17 +178,12 @@ namespace view
 
         public void showVerboseList(IReadOnlyList<Member> members)
         {
-            Console.Clear();
-            this.setBlueText("To Look at a specific member enter the member id at the bottom");
-            Console.WriteLine("\n═══════════════════ Members ════════════════════════\n");
-            // writes out verbose info of members
+            this.displayMemberListHeader();
+
             foreach(Member member in members)
             {
                 this.verboseMemberInfo(member);
             }
-
-            this.setBlueText("To go back to main menu enter 0\n");
         }
-
     }
 }

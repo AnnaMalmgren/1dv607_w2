@@ -11,19 +11,13 @@ namespace model
 
         public IReadOnlyList<Member> MemberList => this._memberList.AsReadOnly();
   
-
         public MemberRegistry()
         {
             this._memberDAL = new BoatClubDAL();
             this._memberList = this._memberDAL.readMemberFile();
         }
-  
 
-        public bool doesMemberIdExists(string id) {
-            return this._memberList.Exists(member => member.MemberId == id);
-        }
-
-        public Member getMember(string id) 
+        public Member getMember(int id) 
         { 
             if (!this.doesMemberIdExists(id))
             {
@@ -32,30 +26,37 @@ namespace model
             
             return this._memberList.Find(member => member.MemberId == id);
         }
+        private bool doesMemberIdExists(int id) {
+            return this._memberList.Exists(member => member.MemberId == id);
+        }
 
         public void deleteMember(Member member) 
         {
            this._memberList.Remove(member);
-           this._memberDAL.writeToMemberFile(this._memberList);	
         }
 
-        private string uniqueId(Member newMember)
+         public void registerMember(Member member)
         {
-            do 
-            {
-                newMember.generateId();
-                if(!this.doesMemberIdExists(newMember.MemberId)) {
-                    return newMember.MemberId;
-                }
-            } while (true);
-        } 
-
-        public void saveMember(Member member)
-        {
-            this.uniqueId(member);
+            this.setMemberId(member);
             this._memberList.Add(member);
-            this._memberDAL.writeToMemberFile(this._memberList);	
         }
+
+
+        private void setMemberId(Member member)
+        {
+            int suggestedId = this._memberList.Count + 1;
+            if (this._memberList.Count == 0) {
+                 member.MemberId = suggestedId;
+            }
+            else
+            {
+                List<int> memberIds = this._memberList.Select(m => m.MemberId).ToList();
+                int minNotUsedIds = Enumerable.Range(1, suggestedId).Except(memberIds).Min();;
+
+                int memberId = minNotUsedIds < suggestedId ? 
+                    member.MemberId = minNotUsedIds :  member.MemberId = suggestedId;
+            }
+        } 
 
         public void updateMember(Member updatedMember)
         {
@@ -66,47 +67,29 @@ namespace model
                     member.Name = updatedMember.Name;
                     member.PersonalNumber = updatedMember.PersonalNumber;
                 });
-                
-                 this._memberDAL.writeToMemberFile(this._memberList);
         }
 
         public void addToBoatList(Member currentMember, BoatTypes type, float length)
-        {
-            
+        { 
             currentMember.addBoat(type, length); 
-            this._memberDAL.writeToMemberFile(this._memberList);
         }
 
         public void updateBoatList(Member member, Boat selectedBoat, float lengthInFeet)
         {
-             member.Boats
-                .Where(boat => boat.Id == selectedBoat.Id)
-                .ToList()
-                .ForEach(boat => {
-                    boat.LengthInFeet = lengthInFeet;
-                });
-                
-                this._memberDAL.writeToMemberFile(this._memberList);
+            member.updateBoatInfo(selectedBoat, lengthInFeet);
         }
 
         public void updateBoatList(Member member, Boat selectedBoat, BoatTypes type)
         {
-             member.Boats
-                .Where(boat => boat.Id == selectedBoat.Id)
-                .ToList()
-                .ForEach(boat => {
-                    boat.Type = type;
-                });
-                
-                this._memberDAL.writeToMemberFile(this._memberList);
+            member.updateBoatInfo(selectedBoat, type);
         }
-        public void deleteBoat(Member member, Boat boat)
+        public void deleteBoat(Member member, Boat boat) => member.deleteBoat(boat);
+        
+
+        public void saveMemberRegistry()
         {
-            member.deleteBoat(boat);
-            member.updateBoatsId();
-            this._memberDAL.writeToMemberFile(this._memberList);
+             this._memberDAL.writeToMemberFile(this._memberList);
         }
-       
     }
 }
 

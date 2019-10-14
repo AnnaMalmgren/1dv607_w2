@@ -1,7 +1,5 @@
 using view;
 using model;
-using System;
-
 
 namespace controller
 {
@@ -24,6 +22,7 @@ namespace controller
 
             if (mainEvent == MainMenu.Exit) 
             {
+                this._registry.saveMemberRegistry();
                 return false;
             }
            
@@ -43,111 +42,104 @@ namespace controller
                 this._memberView.showVerboseList(this._registry.MemberList);
                 this.collectMemberEvents();
             }
-
-            return true;
-                
+            return true;    
         }
 
         private void createMember() 
         {
             try 
             {
-                Member memberCredentials = this._memberView.getMemberCredentials();
-                this._registry.saveMember(memberCredentials);
+                this._registry.registerMember(this._memberView.getMemberCredentials());
                 this._view.setMemberRegisteredMsg();
-            }
-            catch(ArgumentNullException)
-            {
-                this.handleInvalidCredentials();
             }
             catch(PinFormatException)
             {
-                this.handleInvalidCredentials();
+                this._view.invalidPinMsg();
+                this.createMember();
             }
-        }
-
-        private void handleInvalidCredentials() 
-        {
-            this._view.setErrorMsg("Wrong info in credentials");
-            this._view.GetKeyPress();
-            this.createMember();
         }
 
         private void collectMemberEvents()
         {
             try 
             {
-                string memberId = this._memberView.getMemberId();
+                int memberId = this._memberView.getMemberId();
                 Member member = this._registry.getMember(memberId);
-                while (this.memberMenuEvents(member, this._view.getMemberMenuChoice()));
+                this._memberView.displayMember(member);
+                while (this.memberMenuEvents(member, this._view.getMemberMenuChoice(member.Boats.Count > 0)));
             } 
             catch (MemberNotFoundException)
             {
-                this._memberView.setErrorMsg("Member not found");
-                this._memberView.GetKeyPress();
+                this._view.memberNotFoundMsg();
             }  
         }
 
-        private bool memberMenuEvents(Member member, MemberMenu choice)
+        private bool memberMenuEvents(Member member, MemberMenu menuEvent)
         { 
-            this._memberView.displayMember(member);
-
-            if (choice == MemberMenu.GoBack) 
+            if (menuEvent == MemberMenu.GoBack) 
             {
                  return false;
             }
 
-            if (choice == MemberMenu.ChangeMember)
+            if (menuEvent == MemberMenu.ChangeMember)
             {
                 this.changeMember(member);
             }
 
-            if (choice == MemberMenu.DeleteMember)
+            if (menuEvent == MemberMenu.DeleteMember)
             {
-                this.deleteMember(member);
+                if (this._view.getDeleteConfirm())
+                {
+                    this._registry.deleteMember(member);
+                    this._view.setMemberDeletedMsg();
+                    return false;
+                }
             }
 
-            if (choice == MemberMenu.RegisterBoat)
+            if (menuEvent == MemberMenu.RegisterBoat)
             {
                 this.registerBoat(member);
             }
 
-            if (choice == MemberMenu.DeleteBoat)
+            if (menuEvent == MemberMenu.DeleteBoat)
             {
-                this.doDeleteBoat(member);
+                this.deleteBoat(member);
             }
 
-            if (choice == MemberMenu.ChangeBoat)
+            if (menuEvent == MemberMenu.ChangeBoat)
             {
-                this.doChangeBoat(member);
+                this.changeBoat(member);
             }
-
+            this._memberView.displayMember(member);
             return true;
         }
         
-        private void deleteMember(Member member)
-        {
-            if (this._view.getDeleteConfirm())
-            {
-                this._registry.deleteMember(member);
-                this._view.setMemberDeletedMsg();
-            }
-        }
         private void changeMember(Member member)
         {
-            ChangeMember menuChoice = this._view.getChangeMemberChoice();
+            ChangeMember menuEvent = this._view.getChangeMemberChoice();
+            this.handleChangeMemberInfo(member, menuEvent);
+            this._registry.updateMember(member);
+            this._view.setMemberChangedMsg();
+        }
 
-            if (menuChoice == ChangeMember.ChangeName) 
+        private void handleChangeMemberInfo(Member member, ChangeMember menuEvent)
+        {
+            try
             {
-                member.Name = this._memberView.getMemberName();
-            }
-            
-            if (menuChoice == ChangeMember.ChangePersonalNr)
+                if (menuEvent == ChangeMember.ChangeName) 
+                {
+                    member.Name = this._memberView.getMemberName();
+                }
+                else
+                {
+                    member.PersonalNumber = this._memberView.getMemberPersonalNr();
+                }
+             }
+            catch (PinFormatException)
             {
-                 member.PersonalNumber = this._memberView.getMemberPersonalNr();
+                this._view.invalidPinMsg();
+                this.handleChangeMemberInfo(member, menuEvent);
             }
-                this._registry.updateMember(member);
-                this._view.setMemberChangedMsg(); 
         }
 
         private void registerBoat(Member member)
@@ -158,18 +150,10 @@ namespace controller
             this._view.setBoatAddedMsg();
         }
 
-
-        private void doDeleteBoat(Member member)
+        private void deleteBoat(Member member)
         {
-            if (member.Boats.Count > 0)
-            {
-                Boat selectedBoat = this._memberView.getChosenBoat(member);
-                this.handleDeleteBoat(member, selectedBoat);
-            }
-            else
-            {
-                this._view.setNoBoatsMsg();
-            }
+            Boat selectedBoat = this._memberView.getChosenBoat(member);
+            this.handleDeleteBoat(member, selectedBoat);
         }
 
         private void handleDeleteBoat(Member member, Boat boat)
@@ -179,40 +163,31 @@ namespace controller
                 this._registry.deleteBoat(member, boat);
                 this._view.setBoatDeletedMsg();
             }
-
         }
 
-        private void doChangeBoat(Member member)
+        private void changeBoat(Member member)
         {
-            if (member.Boats.Count > 0)
-            {
-                Boat selectedBoat = this._memberView.getChosenBoat(member);
-                this.changeBoat(member, selectedBoat);
-                this._view.setBoatChangedMsg();
-            }
-            else 
-            {
-                this._view.setNoBoatsMsg();
-            }
+            Boat selectedBoat = this._memberView.getChosenBoat(member);
+            this.handleChangeBoat(member, selectedBoat);
         }
             
-        private void changeBoat(Member member, Boat boat)
+        private void handleChangeBoat(Member member, Boat boat)
         {
-            
             ChangeBoat menuChoice = this._view.getChangeBoatChoice();
-            switch (menuChoice)
+
+            if (menuChoice == ChangeBoat.ChangeType)
             {
-                case ChangeBoat.ChangeType:
                 BoatTypes type = this._memberView.getBoatType();
                 this._registry.updateBoatList(member, boat, type);
-                break;
+            }
 
-                case ChangeBoat.ChangeLength:
+            if (menuChoice == ChangeBoat.ChangeLength)
+            {
                 float lengthInFeet = this._memberView.getBoatLength();
                 this._registry.updateBoatList(member, boat, lengthInFeet);
-                break;
-            }      
+            }
+
+            this._view.setBoatChangedMsg();
         }
-    
     }
 }

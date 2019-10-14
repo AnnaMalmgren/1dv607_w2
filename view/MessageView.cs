@@ -43,11 +43,6 @@ namespace view
             this.GetKeyPress("Boat has been deleted, press any key to continue");
         }
 
-        public void setNoBoatsMsg() 
-        {
-            this.GetKeyPress("Member has no boats, press any key to continue");
-        }
-
          public void setMemberDeletedMsg() 
         {
             this.GetKeyPress("Member deleted, press any key to continue");
@@ -61,6 +56,24 @@ namespace view
          public void setMemberRegisteredMsg() 
         {
             this.GetKeyPress("Member registered, press any key to continue");
+        }
+
+        public void invalidPinMsg() 
+        {
+            this.setErrorMsg("Invalid personal number format (YYMMDDNNNN)");
+            this.GetKeyPress();
+        }
+
+        public void memberNotFoundMsg()
+        {
+            this.setErrorMsg("Member not found");
+            this.GetKeyPress();
+        }
+
+         public void setInvalidLengthMsg()
+        {
+            this.setErrorMsg("Boat length not valid");
+            this.GetKeyPress();
         }
     }
 }

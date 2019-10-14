@@ -8,13 +8,11 @@ namespace model
         private string _name;
         private string _personalNumber;
 
-        public int PersonalNrLength = 10;
+        private int _personalNrLength = 10;
 
         public List<Boat> Boats { get; private set; }
 
         public int NrOfBoats => Boats.Count;
-
-        public bool HasNoBoats => Boats.Count == 0;
 
         public string Name
         {
@@ -30,16 +28,14 @@ namespace model
                 this._name = value;
             }
         }
-
-        
+ 
         public string PersonalNumber
         {
             get => this._personalNumber;
 
             set 
             {
-                double pin;
-                if (!double.TryParse(value, out pin) || value.Length != this.PersonalNrLength)
+                if (!double.TryParse(value, out double pin) || value.Length != this._personalNrLength)
                 {
                     throw new PinFormatException();
                 }
@@ -48,7 +44,7 @@ namespace model
             }
         }
 
-        public string MemberId { get; set; }
+        public int MemberId { get; set; }
 
         public Member(string name, string personalNumber) 
         {
@@ -57,34 +53,35 @@ namespace model
             this.Boats = new List<Boat>();
         }
 
-
-        public void generateId() 
-        {
-            // take the two first letters from username.
-            string id = this._name.Substring(0, 2);
-
-            // create three random int and two random chars.
-            Random rnd = new Random();
-            for (int i = 0; i < 3; i++)
-            {
-               id += rnd.Next(0, 10);
-            }
-            for (int i = 0; i < 2; i++)
-            {
-               id += (char)rnd.Next('a','z');  
-            } 
-
-            this.MemberId = id;
-        }
-
         public void addBoat(BoatTypes type, float length) {
             int id = this.NrOfBoats + 1;
             this.Boats.Add(new Boat(type, length, id));
         }
 
-        public Boat getBoat(int id) => this.Boats.FirstOrDefault(boat => boat.Id == id);
+        public Boat getBoat(int id)
+        {
+            return this.Boats.FirstOrDefault(boat => boat.Id == id);
+        }
 
-        public void updateBoatsId()
+        public Boat updateBoatInfo(Boat boat, float lengthInFeet)
+        {
+            boat.LengthInFeet = lengthInFeet;
+            return boat;
+        }
+
+        public Boat updateBoatInfo(Boat boat, BoatTypes type)
+        {
+            boat.Type = type;
+            return boat;
+        }
+
+        public void deleteBoat(Boat boatToRemove)
+        {
+            this.Boats.Remove(boatToRemove);
+            this.updateBoatsId();
+        }
+
+        private void updateBoatsId()
         {
             int count = 1;
             foreach (Boat boat in this.Boats)
@@ -93,9 +90,6 @@ namespace model
                 count++;
             }
         }
-        
-        public void deleteBoat(Boat boatToRemove) => this.Boats.Remove(boatToRemove);
-
 
     }
 }

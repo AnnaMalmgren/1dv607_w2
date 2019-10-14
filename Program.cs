@@ -21,7 +21,6 @@ namespace _1dv607_w2
             catch (Exception e) 
             {
                 Console.WriteLine(e.Message);
-
             }
          
         }
