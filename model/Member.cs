@@ -37,7 +37,7 @@ namespace model
             {
                 if (!double.TryParse(value, out double pin) || value.Length != this._personalNrLength)
                 {
-                    throw new PinFormatException();
+                    throw new ArgumentException();
                 }
 
                 this._personalNumber = value;
@@ -61,18 +61,6 @@ namespace model
         public Boat getBoat(int id)
         {
             return this.Boats.FirstOrDefault(boat => boat.Id == id);
-        }
-
-        public Boat updateBoatInfo(Boat boat, float lengthInFeet)
-        {
-            boat.LengthInFeet = lengthInFeet;
-            return boat;
-        }
-
-        public Boat updateBoatInfo(Boat boat, BoatTypes type)
-        {
-            boat.Type = type;
-            return boat;
         }
 
         public void deleteBoat(Boat boatToRemove)

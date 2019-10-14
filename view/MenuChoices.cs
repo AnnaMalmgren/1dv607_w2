@@ -2,6 +2,8 @@ namespace view
 {
     public enum MainMenu
     {
+        None = -1,
+
         Exit,
 
         AddMember,
@@ -15,15 +17,14 @@ namespace view
     {
         GoBack,
         ChangeMember,
-
         DeleteMember,
-
         RegisterBoat
-
     }
 
     public enum MemberMenu
     {
+        None = -1,
+
         GoBack,
 
         ChangeMember,
@@ -31,7 +32,6 @@ namespace view
         DeleteMember,
 
         RegisterBoat,
-
       
         ChangeBoat,
 
@@ -40,13 +40,17 @@ namespace view
 
     public enum ChangeMember
     {
-        ChangeName = 1,
-        ChangePersonalNr
+        None = -1,
+        GoBack,
+        ChangeName,
+        ChangePersonalNr 
     }
 
     public enum ChangeBoat
     {
-        ChangeType = 1,
+        None = -1,
+        GoBack,
+        ChangeType,
         ChangeLength
     }
 }

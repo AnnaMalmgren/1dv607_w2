@@ -1,3 +1,4 @@
+using System;
 using view;
 using model;
 
@@ -52,7 +53,7 @@ namespace controller
                 this._registry.registerMember(this._memberView.getMemberCredentials());
                 this._view.setMemberRegisteredMsg();
             }
-            catch(PinFormatException)
+            catch(ArgumentException)
             {
                 this._view.invalidPinMsg();
                 this.createMember();
@@ -64,11 +65,16 @@ namespace controller
             try 
             {
                 int memberId = this._memberView.getMemberId();
+                if (this._memberView.userWantToGoBack(memberId))
+                {
+                    return;
+                }
                 Member member = this._registry.getMember(memberId);
                 this._memberView.displayMember(member);
                 while (this.memberMenuEvents(member, this._view.getMemberMenuChoice(member.Boats.Count > 0)));
+                
             } 
-            catch (MemberNotFoundException)
+            catch (ArgumentException)
             {
                 this._view.memberNotFoundMsg();
             }  
@@ -117,6 +123,10 @@ namespace controller
         private void changeMember(Member member)
         {
             ChangeMember menuEvent = this._view.getChangeMemberChoice();
+            if (menuEvent == ChangeMember.GoBack)
+            {
+                return;
+            }
             this.handleChangeMemberInfo(member, menuEvent);
             this._registry.updateMember(member);
             this._view.setMemberChangedMsg();
@@ -125,17 +135,17 @@ namespace controller
         private void handleChangeMemberInfo(Member member, ChangeMember menuEvent)
         {
             try
-            {
+            { 
                 if (menuEvent == ChangeMember.ChangeName) 
                 {
                     member.Name = this._memberView.getMemberName();
                 }
-                else
+                if (menuEvent == ChangeMember.ChangePersonalNr)
                 {
                     member.PersonalNumber = this._memberView.getMemberPersonalNr();
                 }
              }
-            catch (PinFormatException)
+            catch (ArgumentException)
             {
                 this._view.invalidPinMsg();
                 this.handleChangeMemberInfo(member, menuEvent);
@@ -153,14 +163,9 @@ namespace controller
         private void deleteBoat(Member member)
         {
             Boat selectedBoat = this._memberView.getChosenBoat(member);
-            this.handleDeleteBoat(member, selectedBoat);
-        }
-
-        private void handleDeleteBoat(Member member, Boat boat)
-        {
             if (this._view.getDeleteConfirm()) 
             {    
-                this._registry.deleteBoat(member, boat);
+                this._registry.deleteBoat(member, selectedBoat);
                 this._view.setBoatDeletedMsg();
             }
         }
@@ -168,23 +173,28 @@ namespace controller
         private void changeBoat(Member member)
         {
             Boat selectedBoat = this._memberView.getChosenBoat(member);
-            this.handleChangeBoat(member, selectedBoat);
+            this.handleChangeBoat(selectedBoat);
         }
             
-        private void handleChangeBoat(Member member, Boat boat)
+        private void handleChangeBoat(Boat boat)
         {
             ChangeBoat menuChoice = this._view.getChangeBoatChoice();
+
+            if (menuChoice == ChangeBoat.GoBack)
+            {
+                return;
+            }
 
             if (menuChoice == ChangeBoat.ChangeType)
             {
                 BoatTypes type = this._memberView.getBoatType();
-                this._registry.updateBoatList(member, boat, type);
+                this._registry.updateBoatList(boat, type);
             }
 
             if (menuChoice == ChangeBoat.ChangeLength)
             {
                 float lengthInFeet = this._memberView.getBoatLength();
-                this._registry.updateBoatList(member, boat, lengthInFeet);
+                this._registry.updateBoatList(boat, lengthInFeet);
             }
 
             this._view.setBoatChangedMsg();

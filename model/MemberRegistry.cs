@@ -1,3 +1,4 @@
+using System;
 using System.Linq;
 using System.Collections.Generic;
 
@@ -18,29 +19,25 @@ namespace model
         }
 
         public Member getMember(int id) 
-        { 
+        {
             if (!this.doesMemberIdExists(id))
             {
-                throw new MemberNotFoundException();
+                throw new ArgumentException();
             }
-            
             return this._memberList.Find(member => member.MemberId == id);
         }
         private bool doesMemberIdExists(int id) {
             return this._memberList.Exists(member => member.MemberId == id);
         }
 
-        public void deleteMember(Member member) 
-        {
-           this._memberList.Remove(member);
-        }
+        public void deleteMember(Member member) => this._memberList.Remove(member);
+        
 
          public void registerMember(Member member)
         {
             this.setMemberId(member);
             this._memberList.Add(member);
         }
-
 
         private void setMemberId(Member member)
         {
@@ -74,21 +71,21 @@ namespace model
             currentMember.addBoat(type, length); 
         }
 
-        public void updateBoatList(Member member, Boat selectedBoat, float lengthInFeet)
+        public void updateBoatList(Boat selectedBoat, float lengthInFeet)
         {
-            member.updateBoatInfo(selectedBoat, lengthInFeet);
+            selectedBoat.changeBoat(lengthInFeet);
         }
 
-        public void updateBoatList(Member member, Boat selectedBoat, BoatTypes type)
+        public void updateBoatList(Boat selectedBoat, BoatTypes type)
         {
-            member.updateBoatInfo(selectedBoat, type);
+            selectedBoat.changeBoat(type);
         }
         public void deleteBoat(Member member, Boat boat) => member.deleteBoat(boat);
         
 
         public void saveMemberRegistry()
         {
-             this._memberDAL.writeToMemberFile(this._memberList);
+            this._memberDAL.writeToMemberFile(this._memberList);
         }
     }
 }

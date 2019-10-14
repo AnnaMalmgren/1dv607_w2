@@ -66,14 +66,8 @@ namespace view
 
         public void memberNotFoundMsg()
         {
-            this.setErrorMsg("Member not found");
-            this.GetKeyPress();
+            this.setErrorMsg("No member with that Id found");
         }
 
-         public void setInvalidLengthMsg()
-        {
-            this.setErrorMsg("Boat length not valid");
-            this.GetKeyPress();
-        }
     }
 }

@@ -18,8 +18,6 @@ namespace view
                     return name;
                 }
                 this.setErrorMsg("Member name must be entered");
-                this.GetKeyPress();
-
             } while (true);
         }
 
@@ -43,11 +41,12 @@ namespace view
                 {
                     return userId;
                 }
-                this.setErrorMsg("Member id is wrong, enter member id number");
-                this.GetKeyPress();
+                this.setErrorMsg("Member id must be a number");
             } while(true); 
         }
-        
+
+        public bool userWantToGoBack(int input) => input == 0 ? true : false;
+
         public void displayMember(Member member)
         {
             Console.Clear();
@@ -81,7 +80,6 @@ namespace view
                 }
                 
                 this.setErrorMsg($"Error enter a number between 1 and {member.NrOfBoats}");
-                this.GetKeyPress();
             } while(true);
         }
 
@@ -105,8 +103,7 @@ namespace view
                 {
                     return length;
                 }
-                this.setErrorMsg("Error boat length must be a positive numeric value");
-                this.GetKeyPress();
+                this.setErrorMsg("Boat length must be a positive numeric value");
             } while(true);
         }
 
@@ -114,7 +111,6 @@ namespace view
         {
             Console.Clear();
             int nrOfBoatTypes = Enum.GetNames(typeof(BoatTypes)).Length;
-            //waits for user to enter menu choice
             do
             {
                 this.displayBoatTypesMenu(); 
@@ -125,7 +121,7 @@ namespace view
                     return (BoatTypes)index;
                 }
 
-                this.setErrorMsg($"Error enter number 1 or {nrOfBoatTypes}");
+                this.setErrorMsg($"Enter number 1 or {nrOfBoatTypes}");
                 this.GetKeyPress();
             } while (true);
         }
@@ -163,12 +159,11 @@ namespace view
           private void displayMemberListHeader()
         {
             Console.Clear();
-            this.setBlueText("To Look at a specific member enter the member id below");
-            this.setBlueText("To go back to main menu enter 0\n");
+            this.setBlueText("To Look at a specific member enter the member id below\n");
+            this.setBlueText("To go back to main menu enter number 0 and press enter\n");
             Console.WriteLine("\n═══════════════════ Members ════════════════════════\n");
         }
         
-
         private void printCompactMemberInfo(Member member) {
             string formatedOutput = String.Format("{0,-12} {1,12} {2,12}",
             $"Name: {member.Name}", $"Id: {member.MemberId}", $"Boats: {member.NrOfBoats}");

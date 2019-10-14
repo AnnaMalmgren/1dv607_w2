@@ -19,7 +19,7 @@ namespace model
         public float LengthInFeet 
         {
             get => this._lengthInFeet;
-            set
+            private set
             {
                 if (value <= 0)
                 {
@@ -31,13 +31,23 @@ namespace model
 
          public int Id {get; set;}
 
-        public BoatTypes Type { get; set; }
+        public BoatTypes Type { get; private set; }
 
         public Boat (BoatTypes type, float lengthInFeet, int id) 
         {
             this.Type = type;
             this.LengthInFeet = lengthInFeet;
             this.Id = id;
+        }
+
+        public void changeBoat(BoatTypes type)
+        {
+            this.Type = type;
+        }
+
+         public void changeBoat(float length)
+        {
+            this.LengthInFeet = length;
         }
         
     }
