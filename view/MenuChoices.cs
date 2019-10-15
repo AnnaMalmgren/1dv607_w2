@@ -13,14 +13,6 @@ namespace view
         VerboseList
     }
 
-    public enum MemberMenuNoBoats
-    {
-        GoBack,
-        ChangeMember,
-        DeleteMember,
-        RegisterBoat
-    }
-
     public enum MemberMenu
     {
         None = -1,

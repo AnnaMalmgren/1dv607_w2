@@ -7,19 +7,19 @@ namespace controller
     public class ConsoleController
     {
         private MemberRegistry _registry;
-        private MenusView _view;
-        private MemberView _memberView;
+        private MenusView _menuView;
+        private MemberView _view;
 
-        public ConsoleController(MenusView view, MemberView mView)
+        public ConsoleController(MenusView mView, MemberView view)
         {
             this._view = view;
-            this._memberView = mView;
+            this._menuView = mView;
             this._registry = new MemberRegistry();
         }
 
         public bool mainMenu()
         {
-            MainMenu mainEvent = this._view.getMainMenuChoice();
+            MainMenu mainEvent = this._menuView.getMainMenuChoice();
 
             if (mainEvent == MainMenu.Exit) 
             {
@@ -34,13 +34,13 @@ namespace controller
             
             if (mainEvent == MainMenu.CompactList)
             {
-                this._memberView.showCompactList(this._registry.Members);
+                this._view.showCompactList(this._registry.Members);
                 this.collectMemberEvents(); 
             }
 
             if  (mainEvent == MainMenu.VerboseList)
             {
-                this._memberView.showVerboseList(this._registry.Members);
+                this._view.showVerboseList(this._registry.Members);
                 this.collectMemberEvents();
             }
             return true;    
@@ -50,12 +50,11 @@ namespace controller
         {
             try 
             {
-                this._registry.registerMember(this._memberView.getMemberCredentials());
-                this._view.setMemberRegisteredMsg();
+                this._registry.registerMember(this._view.getMemberName(), this._view.getMemberPIN());
             }
             catch(ArgumentException)
             {
-                this._view.invalidPinMsg();
+                this._view.setInvalidInputMsg();
                 this.createMember();
             }
         }
@@ -64,19 +63,20 @@ namespace controller
         {
             try 
             {
-                int memberId = this._memberView.getMemberId();
-                if (this._memberView.userWantToGoBack(memberId))
+                int memberId = this._view.getMemberId();
+                if (this._view.userWantToGoBack(memberId))
                 {
                     return;
                 }
+
                 Member member = this._registry.getMember(memberId);
-                this._memberView.displayMember(member);
-                while (this.memberMenuEvents(member, this._view.getMemberMenuChoice(member.Boats.Count > 0)));
-                
+                this._view.displayMember(member);
+                MemberMenu menuEvent = this._menuView.getMemberMenuChoice(member.Boats.Count > 0);
+                while (this.memberMenuEvents(member, menuEvent));
             } 
             catch (ArgumentException)
             {
-                this._view.memberNotFoundMsg();
+                this._view.setInvalidInputMsg();
             }  
         }
 
@@ -94,10 +94,9 @@ namespace controller
 
             if (menuEvent == MemberMenu.DeleteMember)
             {
-                if (this._view.getDeleteConfirm())
+                if (this._menuView.getDeleteConfirm())
                 {
                     this._registry.deleteMember(member);
-                    this._view.setMemberDeletedMsg();
                     return false;
                 }
             }
@@ -116,20 +115,19 @@ namespace controller
             {
                 this.changeBoat(member);
             }
-            this._memberView.displayMember(member);
+
+            this._view.displayMember(member);
             return true;
         }
         
         private void changeMember(Member member)
         {
-            ChangeMember menuEvent = this._view.getChangeMemberChoice();
+            ChangeMember menuEvent = this._menuView.getChangeMemberChoice();
             if (menuEvent == ChangeMember.GoBack)
             {
                 return;
             }
             this.handleChangeMemberInfo(member, menuEvent);
-            this._registry.updateMember(member);
-            this._view.setMemberChangedMsg();
         }
 
         private void handleChangeMemberInfo(Member member, ChangeMember menuEvent)
@@ -138,66 +136,79 @@ namespace controller
             { 
                 if (menuEvent == ChangeMember.ChangeName) 
                 {
-                    member.Name = this._memberView.getMemberName();
+                    member.Name = this._view.getMemberName();
                 }
                 if (menuEvent == ChangeMember.ChangePersonalNr)
                 {
-                    member.PersonalNumber = this._memberView.getMemberPersonalNr();
+                    member.PersonalNumber = this._view.getMemberPIN();
                 }
+                this._registry.updateMember(member);
              }
             catch (ArgumentException)
             {
-                this._view.invalidPinMsg();
+                this._view.setInvalidInputMsg();
                 this.handleChangeMemberInfo(member, menuEvent);
             }
         }
 
         private void registerBoat(Member member)
         {
-            BoatTypes type = this._memberView.getBoatType();
-            float length = this._memberView.getBoatLength();
-            this._registry.addToBoatList(member, type, length);
-            this._view.setBoatAddedMsg();
+            try
+            {
+                this._registry.addToBoatList(member, this._view.getBoatType(), this._view.getBoatLength());
+            }
+            catch (ArgumentException)
+            {
+                this._view.setInvalidInputMsg();
+                this.registerBoat(member);
+            }
         }
 
         private void deleteBoat(Member member)
         {
-            Boat selectedBoat = this._memberView.getChosenBoat(member);
-            if (this._view.getDeleteConfirm()) 
+            Boat selectedBoat = this._view.getChosenBoat(member);
+            if (this._menuView.getDeleteConfirm()) 
             {    
                 this._registry.deleteBoat(member, selectedBoat);
-                this._view.setBoatDeletedMsg();
             }
         }
 
         private void changeBoat(Member member)
         {
-            Boat selectedBoat = this._memberView.getChosenBoat(member);
-            this.handleChangeBoat(selectedBoat);
-        }
-            
-        private void handleChangeBoat(Boat boat)
-        {
-            ChangeBoat menuChoice = this._view.getChangeBoatChoice();
-
+            Boat selectedBoat = this._view.getChosenBoat(member);
+            ChangeBoat menuChoice = this._menuView.getChangeBoatChoice();
             if (menuChoice == ChangeBoat.GoBack)
             {
                 return;
             }
-
+            
+            this.handleChangeBoat(selectedBoat, menuChoice);
+        }
+            
+        private void handleChangeBoat(Boat boat, ChangeBoat menuChoice)
+        {
             if (menuChoice == ChangeBoat.ChangeType)
             {
-                BoatTypes type = this._memberView.getBoatType();
-                this._registry.updateBoatList(boat, type);
+                this._registry.updateBoatList(boat, this._view.getBoatType());
             }
 
             if (menuChoice == ChangeBoat.ChangeLength)
             {
-                float lengthInFeet = this._memberView.getBoatLength();
-                this._registry.updateBoatList(boat, lengthInFeet);
+               this.tryUpdateBoatLength(boat);
             }
-
-            this._view.setBoatChangedMsg();
+        }
+        private void tryUpdateBoatLength(Boat boat)
+        {
+             try
+                {
+                    string lengthInFeet = this._view.getBoatLength();
+                    this._registry.updateBoatList(boat, lengthInFeet);
+                }
+                catch(ArgumentException)
+                {
+                    this._view.setInvalidInputMsg();
+                    this.tryUpdateBoatLength(boat);
+                }
         }
     }
 }

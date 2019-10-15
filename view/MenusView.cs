@@ -7,16 +7,21 @@ namespace view
         public MainMenu getMainMenuChoice() 
         {
             Console.Clear();
-          
             Console.WriteLine("\n═══════════════════ Main Menu ══════════════════════\n");;
             Console.WriteLine(" 0. Save and exit");
             Console.WriteLine(" 1. Add Member");
             Console.WriteLine(" 2. List members compact");
             Console.WriteLine(" 3. List members verbose");
-            Console.WriteLine("\n ══════════════════════════════════════════\n");
-            this.setBlueText(">Enter menu selection [0-3]: "); 
+            this.setMenuFooter();
+
             int mainMenuLength = Enum.GetNames(typeof(MainMenu)).Length;
             return (MainMenu)this.getMenuChoiceNr(mainMenuLength);
+        }
+
+        private void setMenuFooter()
+        {
+            Console.WriteLine("\n ══════════════════════════════════════════\n");
+            this.setBlueText(">Enter menu selection: ");
         }
 
         private int getMenuChoiceNr(int menuLength)
@@ -29,6 +34,7 @@ namespace view
             }
             else 
             {
+                // if member enter a invalid menu choice (all menu enums have None = -1)
                 return -1;
             }
 
@@ -54,15 +60,14 @@ namespace view
                 Console.WriteLine(" 4. Change boat information");
                 Console.WriteLine(" 5. Delete boat");
             }
-            
-            Console.WriteLine("\n ═══════════════════════════════════════════\n");
-            this.setBlueText(">Enter menu selection: ");
+            this.setMenuFooter();
         }
 
         private int getNrOfMemberMenuChoices(bool memberHasBoats)
         {
             int nrOfMemberMenuChoices = Enum.GetNames(typeof(MemberMenu)).Length;
-            int nrOfHasNoBoatMenuChoices = Enum.GetNames(typeof(MemberMenuNoBoats)).Length;
+            // if member has no boat, remove delete and change boat from menu choices.
+            int nrOfHasNoBoatMenuChoices = nrOfMemberMenuChoices - 2; 
             return memberHasBoats ? nrOfMemberMenuChoices  : nrOfHasNoBoatMenuChoices;
         }
 
@@ -72,9 +77,9 @@ namespace view
             Console.WriteLine($" 0. Go back");
             Console.WriteLine($" 1. Change members name");
             Console.WriteLine($" 2. Change members personal number");
-            Console.WriteLine("\n ══════════════════════════════════════════\n");
-            this.setBlueText("\n>Enter menu selection [1-2]: ");
-             int changeMenuLength = Enum.GetNames(typeof(ChangeMember)).Length;
+            this.setMenuFooter();
+
+            int changeMenuLength = Enum.GetNames(typeof(ChangeMember)).Length;
             return (ChangeMember)this.getMenuChoiceNr(changeMenuLength);
         }
 
@@ -84,8 +89,8 @@ namespace view
             Console.WriteLine($" 0. Go back");
             Console.WriteLine(" 1. Change type");
             Console.WriteLine(" 2. Change length");
-            Console.WriteLine("\n ══════════════════════════════════════════\n");
-            this.setBlueText("\n>Enter menu selection [1-2]: ");
+            this.setMenuFooter();
+
             int changeBoatLength = Enum.GetNames(typeof(ChangeBoat)).Length;
             return (ChangeBoat)getMenuChoiceNr(changeBoatLength);
         }
@@ -103,11 +108,8 @@ namespace view
                 if ( confirm == "n") {
                     return false;
                 }
-             
                 this.setErrorMsg("You have to enter y for yes or n for no");
-                this.GetKeyPress();
             } while (true);
         }
-
     }
 }

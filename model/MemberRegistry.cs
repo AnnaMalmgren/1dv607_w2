@@ -33,37 +33,25 @@ namespace model
 
         public void deleteMember(Member member) => this._members.Remove(member);
 
-        public void registerMember(Member member)
+        public void registerMember(string name, string pin)
         {
-            this.setMemberId(member);
+            int id = this.getMinMemberId();
+            Member member = new Member(name, pin, id);
             this._members.Add(member);
         }
 
-        private void setMemberId(Member member)
+        private int getMinMemberId()
         {
             int suggestedId = this._members.Count + 1;
-            if (this._members.Count == 0) {
-                 member.setMemberId(suggestedId);
-            }
-            else
-            {
-               this.getMinMemberId(suggestedId, member);
-            }
-        }
 
-        private void getMinMemberId(int suggestedId, Member member)
-        {
+            if (this._members.Count == 0) {
+                return suggestedId;
+            }
+
             List<int> memberIds = this._members.Select(m => m.MemberId).ToList();
                 int minNotUsedId = Enumerable.Range(1, suggestedId).Except(memberIds).Min();
 
-            if (minNotUsedId < suggestedId)
-            {
-                member.setMemberId(minNotUsedId);
-            }
-            else
-            {
-                member.setMemberId(suggestedId);
-            }
+            return minNotUsedId < suggestedId ? minNotUsedId : suggestedId;
         }
 
         public void updateMember(Member updatedMember)
@@ -77,19 +65,20 @@ namespace model
                 });
         }
 
-        public void addToBoatList(Member member, BoatTypes type, float length)
-        { 
-            member.addBoat(type, length); 
+        public void addToBoatList(Member member, BoatTypes type, string length)
+        {
+            int boatId = member.Boats.Count + 1; 
+            member.Boats.Add(new Boat(type, length, boatId)); 
         }
 
-        public void updateBoatList(Boat selectedBoat, float lengthInFeet)
+        public void updateBoatList(Boat selectedBoat, string lengthInFeet)
         {
-            selectedBoat.changeBoat(lengthInFeet);
+            selectedBoat.LengthInFeet = lengthInFeet;
         }
 
         public void updateBoatList(Boat selectedBoat, BoatTypes type)
         {
-            selectedBoat.changeBoat(type);
+            selectedBoat.Type = type;
         }
 
         public void deleteBoat(Member member, Boat boat) => member.deleteBoat(boat);

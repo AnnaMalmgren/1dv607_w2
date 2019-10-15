@@ -1,54 +1,59 @@
 using System;
 
-
 namespace model
 {
     public enum BoatTypes
     {
         Sailboat = 1, 
         Motorsailer, 
-        kayak,
+        Kayak,
         Canoe, 
         Other
     }
+
     public class Boat 
     {
-        private float _lengthInFeet;
+        private string _lengthInFeet;
 
-        public float LengthInFeet 
+        private int _id;
+
+        public string LengthInFeet 
         {
             get => this._lengthInFeet;
-            private set
+            set
             {
-                if (value <= 0)
+                if (!float.TryParse(value, out  float length) && length <= 0)
                 {
-                    throw new ArgumentOutOfRangeException();
+                    throw new ArgumentException();
                 }
+                
                 _lengthInFeet = value;
             }
         }
 
-         public int Id {get; set;}
+         public int Id 
+         {
+             get => this._id; 
+             set
+             {
+                 if(value < 0)
+                 {
+                     throw new ArgumentOutOfRangeException();
+                 }
 
-        public BoatTypes Type { get; private set; }
+                 this._id = value;
+             }
+        }
 
-        public Boat (BoatTypes type, float lengthInFeet, int id) 
+        public BoatTypes Type { get; set; }
+
+        public Boat (BoatTypes type, string lengthInFeet, int id) 
         {
             this.Type = type;
             this.LengthInFeet = lengthInFeet;
             this.Id = id;
         }
 
-        public void changeBoat(BoatTypes type)
-        {
-            this.Type = type;
-        }
-
-         public void changeBoat(float length)
-        {
-            this.LengthInFeet = length;
-        }
-        
     }
 
 }

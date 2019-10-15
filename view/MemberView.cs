@@ -6,11 +6,6 @@ namespace view
 {
     public class MemberView : MessageView
     {
-        public Member getMemberCredentials() 
-        {
-            return new Member(this.getMemberName(), this.getMemberPersonalNr());
-        }
-
          public string getMemberName() 
         {
             Console.Clear(); 
@@ -22,16 +17,15 @@ namespace view
                 {
                     return name;
                 }
-                this.setErrorMsg("Member name must be entered");
+                this.setInvalidInputMsg();
             } while (true);
         }
 
-        public string getMemberPersonalNr()
+        public string getMemberPIN()
         { 
-            this.setBlueText(">Enter members personal number: ");
+            this.setBlueText(">Enter members personal number [Format YYMMDDNNNN]: ");
             return Console.ReadLine();
         }
-
 
         public int getMemberId()
         {
@@ -42,10 +36,11 @@ namespace view
                 {
                     return userId;
                 }
-                this.setErrorMsg("Member id must be a number");
+                this.setInvalidInputMsg();
             } while(true); 
         }
-
+        
+        // is used to check if user entered member id 0 which means user wants to go back.
         public bool userWantToGoBack(int input) => input == 0 ? true : false;
 
         public void displayMember(Member member)
@@ -60,7 +55,7 @@ namespace view
             Console.WriteLine($"Name: {member.Name}");
             Console.WriteLine($"PersonalNumber: {member.PersonalNumber}");
             Console.WriteLine($"Member id: {member.MemberId}");
-            Console.WriteLine($"Nr of boats: {member.NrOfBoats}");
+            Console.WriteLine($"Nr of boats: {member.Boats.Count}");
             this.displayBoats(member.Boats);
             Console.WriteLine("\n═══════════════════════════════════════════════\n");
         }
@@ -75,12 +70,11 @@ namespace view
                 this.setBlueText("\n>Enter nr: ");
 
                 if (int.TryParse(Console.ReadLine(), out int boatId) && boatId >= 1
-                    && boatId <= member.NrOfBoats)
+                    && boatId <= member.Boats.Count)
                 {
                     return member.getBoat(boatId);
                 }
-                
-                this.setErrorMsg($"Error enter a number between 1 and {member.NrOfBoats}");
+                this.setErrorMsg($"Error enter a number between 1 and {member.Boats.Count}");
             } while(true);
         }
 
@@ -93,19 +87,11 @@ namespace view
             }
         }
 
-        public float getBoatLength() 
+        public string getBoatLength() 
         {
             Console.Clear();
-            do 
-            {
-                this.setBlueText(">Enter boats length in feet: ");
-                string userInput = Console.ReadLine();
-                if (float.TryParse(userInput, out float length) && length > 0)
-                {
-                    return length;
-                }
-                this.setErrorMsg("Boat length must be a positive numeric value");
-            } while(true);
+            this.setBlueText(">Enter boats length in feet: ");
+            return Console.ReadLine();
         }
 
         public BoatTypes getBoatType() 
@@ -115,21 +101,18 @@ namespace view
             do
             {
                 this.displayBoatTypesMenu(); 
-               
+                
                 if (int.TryParse(Console.ReadLine(), out int index) && index >= 1
                     && index <= nrOfBoatTypes)
                 {
                     return (BoatTypes)index;
                 }
-
                 this.setErrorMsg($"Enter number 1 or {nrOfBoatTypes}");
-                this.GetKeyPress();
             } while (true);
         }
 
         private void displayBoatTypesMenu() 
         {
-           
             Console.WriteLine("\n - Boat types --------------------------------\n");
             this.displayBoatTypes();
             Console.WriteLine("\n ══════════════════════════════════════════\n");
@@ -138,19 +121,17 @@ namespace view
 
         private void displayBoatTypes()
         {
-             int currentNr  = 1;
+            int currentNr  = 1;
              foreach (string boatType in Enum.GetNames(typeof(BoatTypes)))
             {
                 Console.WriteLine($"{currentNr}. {boatType}");
                 currentNr++;
             }
-
         }
 
         public void showCompactList(IReadOnlyList<Member> members)
         {
             this.displayMemberListHeader();
-
             foreach(Member member in members)
             {
                 this.printCompactMemberInfo(member);
@@ -167,7 +148,7 @@ namespace view
         
         private void printCompactMemberInfo(Member member) {
             string formatedOutput = String.Format("{0,-12} {1,12} {2,12}",
-            $"Name: {member.Name}", $"Id: {member.MemberId}", $"Boats: {member.NrOfBoats}");
+            $"Name: {member.Name}", $"Id: {member.MemberId}", $"Boats: {member.Boats.Count}");
             Console.WriteLine(formatedOutput);
             Console.WriteLine("______________________________________________\n");
         }
@@ -175,7 +156,6 @@ namespace view
         public void showVerboseList(IReadOnlyList<Member> members)
         {
             this.displayMemberListHeader();
-
             foreach(Member member in members)
             {
                 this.verboseMemberInfo(member);

@@ -13,8 +13,6 @@ namespace model
         
         public List<Boat> Boats { get; private set; }
 
-        public int NrOfBoats => Boats.Count;
-
         public string Name
         {
             get => this._name;
@@ -47,21 +45,12 @@ namespace model
 
         public int MemberId { get; private set; }
 
-        public Member(string name, string personalNumber) 
+        public Member(string name, string personalNumber, int id) 
         {
             this.Name = name; 
             this.PersonalNumber = personalNumber;
-            this.Boats = new List<Boat>();
-        }
-
-        public void setMemberId(int id)
-        {
             this.MemberId = id;
-        }
-
-        public void addBoat(BoatTypes type, float length) {
-            int id = this.NrOfBoats + 1;
-            this.Boats.Add(new Boat(type, length, id));
+            this.Boats = new List<Boat>();
         }
 
         public Boat getBoat(int id)
