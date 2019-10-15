@@ -6,7 +6,7 @@ namespace view
 {
     public class MemberView : MessageView
     {
-         public string getMemberName() 
+        public string getMemberName() 
         {
             Console.Clear(); 
             do
@@ -31,7 +31,7 @@ namespace view
         {
             do
             {
-                this.setBlueText(">Enter members member id: ");
+                this.setBlueText(">Enter members member id [enter 0 to go back]: ");
                 if (int.TryParse(Console.ReadLine(), out int userId))
                 {
                     return userId;
@@ -74,7 +74,7 @@ namespace view
                 {
                     return member.getBoat(boatId);
                 }
-                this.setErrorMsg($"Error enter a number between 1 and {member.Boats.Count}");
+                this.setErrorMsg($"Error enter a boat id between 1 and {member.Boats.Count}");
             } while(true);
         }
 
@@ -107,7 +107,7 @@ namespace view
                 {
                     return (BoatTypes)index;
                 }
-                this.setErrorMsg($"Enter number 1 or {nrOfBoatTypes}");
+                this.setInvalidInputMsg();
             } while (true);
         }
 
@@ -142,7 +142,6 @@ namespace view
         {
             Console.Clear();
             this.setBlueText("To Look at a specific member enter the member id below\n");
-            this.setBlueText("To go back to main menu enter number 0 and press enter\n");
             Console.WriteLine("\n═══════════════════ Members ════════════════════════\n");
         }
         

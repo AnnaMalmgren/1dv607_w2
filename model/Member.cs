@@ -9,6 +9,8 @@ namespace model
 
         private string _personalNumber;
 
+        private int _memberId;
+
         private int _personalNrLength = 10;
         
         public List<Boat> Boats { get; private set; }
@@ -43,7 +45,13 @@ namespace model
             }
         }
 
-        public int MemberId { get; private set; }
+        public int MemberId { 
+            get => this._memberId; 
+            set
+            {
+                this._memberId = value;
+            }
+        }
 
         public Member(string name, string personalNumber, int id) 
         {

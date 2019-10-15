@@ -85,6 +85,7 @@ namespace view
 
         public ChangeBoat getChangeBoatChoice() 
         {
+            Console.Clear();
             Console.WriteLine("\n - Change boat information -------------------------\n");
             Console.WriteLine($" 0. Go back");
             Console.WriteLine(" 1. Change type");

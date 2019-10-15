@@ -71,8 +71,7 @@ namespace controller
 
                 Member member = this._registry.getMember(memberId);
                 this._view.displayMember(member);
-                MemberMenu menuEvent = this._menuView.getMemberMenuChoice(member.Boats.Count > 0);
-                while (this.memberMenuEvents(member, menuEvent));
+                while (this.memberMenuEvents(member));
             } 
             catch (ArgumentException)
             {
@@ -80,8 +79,10 @@ namespace controller
             }  
         }
 
-        private bool memberMenuEvents(Member member, MemberMenu menuEvent)
+        private bool memberMenuEvents(Member member)
         { 
+            MemberMenu menuEvent = this._menuView.getMemberMenuChoice(member.Boats.Count > 0);
+
             if (menuEvent == MemberMenu.GoBack) 
             {
                  return false;
@@ -123,10 +124,6 @@ namespace controller
         private void changeMember(Member member)
         {
             ChangeMember menuEvent = this._menuView.getChangeMemberChoice();
-            if (menuEvent == ChangeMember.GoBack)
-            {
-                return;
-            }
             this.handleChangeMemberInfo(member, menuEvent);
         }
 
@@ -134,6 +131,10 @@ namespace controller
         {
             try
             { 
+                if (menuEvent == ChangeMember.GoBack)
+                {
+                    return;
+                }
                 if (menuEvent == ChangeMember.ChangeName) 
                 {
                     member.Name = this._view.getMemberName();
@@ -177,16 +178,16 @@ namespace controller
         {
             Boat selectedBoat = this._view.getChosenBoat(member);
             ChangeBoat menuChoice = this._menuView.getChangeBoatChoice();
-            if (menuChoice == ChangeBoat.GoBack)
-            {
-                return;
-            }
-            
             this.handleChangeBoat(selectedBoat, menuChoice);
         }
             
         private void handleChangeBoat(Boat boat, ChangeBoat menuChoice)
         {
+            if (menuChoice == ChangeBoat.GoBack)
+            {
+                return;
+            }
+           
             if (menuChoice == ChangeBoat.ChangeType)
             {
                 this._registry.updateBoatList(boat, this._view.getBoatType());
