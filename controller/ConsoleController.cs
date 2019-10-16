@@ -63,7 +63,7 @@ namespace controller
         {
             try 
             {
-                int memberId = this._view.getMemberId();
+                string memberId = this._view.getMemberId();
                 if (this._view.userWantToGoBack(memberId))
                 {
                     return;
@@ -72,10 +72,11 @@ namespace controller
                 Member member = this._registry.getMember(memberId);
                 this._view.displayMember(member);
                 while (this.memberMenuEvents(member));
-            } 
+            }
             catch (ArgumentException)
             {
                 this._view.setInvalidInputMsg();
+                this.collectMemberEvents();
             }  
         }
 

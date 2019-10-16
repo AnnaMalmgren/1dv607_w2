@@ -4,7 +4,8 @@ using System.Linq;
 
 namespace model
 {
-    public class Member {
+    public class Member 
+    {
         private string _name;
 
         private string _personalNumber;
@@ -61,11 +62,8 @@ namespace model
             this.Boats = new List<Boat>();
         }
 
-        public Boat getBoat(int id)
-        {
-            return this.Boats.FirstOrDefault(boat => boat.Id == id);
-        }
-
+        public Boat getBoat(int id) => this.Boats.FirstOrDefault(boat => boat.Id == id);
+        
         public void deleteBoat(Boat boatToRemove)
         {
             this.Boats.Remove(boatToRemove);

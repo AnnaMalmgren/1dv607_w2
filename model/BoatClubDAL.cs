@@ -6,7 +6,8 @@ using System.Collections.Generic;
 namespace model
 
 {
-    public class BoatClubDAL {
+    public class BoatClubDAL 
+    {
 
         private string _fileName = "members.json";
         private string _filePath => Path.Combine(AppDomain.CurrentDomain.BaseDirectory, this._fileName);
@@ -19,7 +20,7 @@ namespace model
             }
         }
 
-        public void createEmptyMemberFile()
+        private void createEmptyMemberFile()
         {
             File.Create(this._filePath).Dispose();
         }

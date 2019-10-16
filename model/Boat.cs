@@ -22,12 +22,12 @@ namespace model
             get => this._lengthInFeet;
             set
             {
-                if (!float.TryParse(value, out  float length) && length <= 0)
+                if (!float.TryParse(value, out float length) || length < 0)
                 {
                     throw new ArgumentException();
                 }
                 
-                _lengthInFeet = value;
+                this._lengthInFeet = value;
             }
         }
 
@@ -36,7 +36,7 @@ namespace model
              get => this._id; 
              set
              {
-                 if(value < 0)
+                 if(value <= 0)
                  {
                      throw new ArgumentOutOfRangeException();
                  }

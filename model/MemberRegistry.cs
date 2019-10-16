@@ -4,7 +4,8 @@ using System.Collections.Generic;
 
 namespace model
 {
-    public class MemberRegistry {
+    public class MemberRegistry 
+    {
         
         private List<Member> _members = new List<Member>();
 
@@ -18,15 +19,26 @@ namespace model
             this._members = this._memberDAL.readMemberFile();
         }
 
-        public Member getMember(int id) 
+        public Member getMember(string memberId) 
         {
+            int id = this.getValidatedInputId(memberId);
+            return this._members.Find(member => member.MemberId == id);
+        }
+
+        private int getValidatedInputId(string memberId)
+        {
+            if (!int.TryParse(memberId, out int id) && id < 1)
+            {
+                throw new ArgumentException();
+            }
             if (!this.doesMemberIdExists(id))
             {
                 throw new ArgumentException();
             }
 
-            return this._members.Find(member => member.MemberId == id);
+            return id;
         }
+
         private bool doesMemberIdExists(int id) {
             return this._members.Exists(member => member.MemberId == id);
         }
@@ -49,7 +61,8 @@ namespace model
             }
 
             List<int> memberIds = this._members.Select(m => m.MemberId).ToList();
-                int minNotUsedId = Enumerable.Range(1, suggestedId).Except(memberIds).Min();
+            // if any numbers is missing in memberIds return the smallet missing number.
+            int minNotUsedId = Enumerable.Range(1, suggestedId).Except(memberIds).Min();
 
             return minNotUsedId < suggestedId ? minNotUsedId : suggestedId;
         }

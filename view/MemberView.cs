@@ -27,21 +27,14 @@ namespace view
             return Console.ReadLine();
         }
 
-        public int getMemberId()
+        public string getMemberId()
         {
-            do
-            {
-                this.setBlueText(">Enter members member id [enter 0 to go back]: ");
-                if (int.TryParse(Console.ReadLine(), out int userId))
-                {
-                    return userId;
-                }
-                this.setInvalidInputMsg();
-            } while(true); 
+            this.setBlueText(">Enter members member id [enter 0 to go back]: ");
+            return Console.ReadLine();
         }
         
         // is used to check if user entered member id 0 which means user wants to go back.
-        public bool userWantToGoBack(int input) => input == 0 ? true : false;
+        public bool userWantToGoBack(string input) => input == "0" ? true : false;
 
         public void displayMember(Member member)
         {
@@ -83,9 +76,12 @@ namespace view
             foreach (Boat boat in boats)
             {
                 Console.WriteLine("\n-----------------------------------------------\n");
-                Console.WriteLine($"Boat nr {boat.Id}\nType: {boat.Type}\nLength: {boat.LengthInFeet}");
+                this.boatInfo(boat);
             }
         }
+
+        private void boatInfo(Boat boat) => 
+            Console.WriteLine($"Boat nr {boat.Id}\nType: {boat.Type}\nLength: {boat.LengthInFeet}");
 
         public string getBoatLength() 
         {
@@ -101,7 +97,7 @@ namespace view
             do
             {
                 this.displayBoatTypesMenu(); 
-                
+    
                 if (int.TryParse(Console.ReadLine(), out int index) && index >= 1
                     && index <= nrOfBoatTypes)
                 {

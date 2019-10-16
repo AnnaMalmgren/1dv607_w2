@@ -37,7 +37,6 @@ namespace view
                 // if member enter a invalid menu choice (all menu enums have None = -1)
                 return -1;
             }
-
         }
 
         public MemberMenu getMemberMenuChoice(bool memberHasBoats)
