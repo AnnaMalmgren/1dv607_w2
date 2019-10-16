@@ -1,7 +1,6 @@
-﻿
+﻿using System;
 using view;
 using controller;
-using System;
 
 
 namespace _1dv607_w2
@@ -10,7 +9,7 @@ namespace _1dv607_w2
     {
         static void Main(string[] args)
         {
-            try 
+            try
             {
                 MenusView view = new MenusView();
                 MemberView mView = new MemberView();
@@ -18,11 +17,11 @@ namespace _1dv607_w2
                 
                 while(app.mainMenu());
             }
-            catch (Exception e) 
+            catch(Exception e)
             {
                 Console.WriteLine(e.Message);
             }
-         
+     
         }
     }
 }
